@@ -1,0 +1,5967 @@
+Title: Project Option trading
+URL: https://chatgpt.com/share/6ab9de6d-b8d8-83e8-ba15-3bcb3b369f4a
+Source element: <main>
+---
+Project Option trading
+·
+Work
+Share
+This is a copy of a shared ChatGPT chat. It won't be added to memory.
+Report conversation
+You said:
+do very deep research to address my request: now find the best and profitable ML models, list top 20, (why it's a good model, any result/ evaluation/ data); Also what's imprtant factors to have successfull ML model in terms of prediction, profitability and learning capability, or any other important factos; use different sources/websites, Bank data/report, books, platforms,....etc. give at the end the sources you used for your response.
+ChatGPT said:
+
+Yes. I treated this as a deep research question specifically for ML applied to options/derivatives trading, rather than simply asking “which neural network predicts stocks best.”
+
+The most important finding is this:
+
+The best ML model for options is usually not the model with the lowest prediction error.
+The best model is the one that produces a stable, out-of-sample economic edge after transaction costs, bid/ask spreads, slippage, volatility-regime changes, tail events and realistic execution.
+
+That distinction is strongly supported by recent options research: models can improve pricing RMSE substantially while failing to improve actual trading P&L. A 2026 study explicitly demonstrates this disconnect between option-pricing accuracy and realized trading performance.
+SSRN
+
+Executive conclusion
+
+For an options-focused ML system, my current ranking is:
+
+Rank ML model / architecture Best use in options My overall rating
+1 XGBoost / Gradient-Boosted Trees IV, return, probability, trade selection ⭐⭐⭐⭐⭐
+2 LSTM / Bi-LSTM IV/RV forecasting, sequential option signals ⭐⭐⭐⭐⭐
+3 Transformer / Autoformer Long-horizon, multimodal forecasting ⭐⭐⭐⭐⭐
+4 LightGBM IV surface, high-dimensional tabular data ⭐⭐⭐⭐⭐
+5 Temporal Fusion Transformer (TFT) Multi-horizon + heterogeneous features ⭐⭐⭐⭐⭐
+6 GRU Sequential volatility/hedging ⭐⭐⭐⭐½
+7 Random Forest Robust nonlinear baseline/classification ⭐⭐⭐⭐½
+8 Neural-network MLP Cross-sectional pricing/return prediction ⭐⭐⭐⭐½
+9 Graph Neural Network (GNN) Entire option-chain/surface modeling ⭐⭐⭐⭐½
+10 Deep Reinforcement Learning — PPO Dynamic hedging/trading ⭐⭐⭐⭐½
+11 Deep Reinforcement Learning — DDPG/TD3 Continuous hedge sizing ⭐⭐⭐⭐
+12 CNN / 2D CNN Volatility surface/image-like representation ⭐⭐⭐⭐
+13 VAE / Variational Autoencoder Distribution + volatility-surface representation ⭐⭐⭐⭐
+14 Neural-SDE models Derivative pricing + scenario generation ⭐⭐⭐⭐
+15 Gaussian Process / Deep Kernel Learning Small-data pricing/uncertainty ⭐⭐⭐⭐
+16 N-BEATS / N-BEATS-GAN Time-series forecasting + risk ⭐⭐⭐½
+17 Elastic Net / regularized linear models Feature selection / benchmark / regime model ⭐⭐⭐½
+18 Support Vector Regression (SVR) Small/medium nonlinear datasets ⭐⭐⭐½
+19 CatBoost Mixed/categorical/tabular features ⭐⭐⭐½
+20 Hybrid ensembles / model stacking Production-level robustness ⭐⭐⭐⭐⭐*
+
+*The ensemble gets a special ranking because it is not a single algorithm. In actual trading, combining complementary models can be more robust than betting everything on one architecture.
+
+First: what exactly should the ML model predict?
+
+This is probably the most important decision in the entire project.
+
+There are at least seven different ML problems in options:
+
+A. Direction
+𝑃
+(
+𝑆
+𝑡
++
+ℎ
+>
+𝑆
+𝑡
+)
+P(S
+t+h
+​
+
+>S
+t
+​
+
+)
+
+Useful for:
+
+call/put selection
+debit spreads
+directional trades.
+B. Return
+𝐸
+[
+𝑅
+𝑡
++
+ℎ
+]
+E[R
+t+h
+​
+
+]
+
+Useful for:
+
+directional options,
+delta selection,
+stock ranking.
+C. Realized volatility
+𝐸
+[
+𝑅
+𝑉
+𝑡
++
+ℎ
+]
+E[RV
+t+h
+​
+
+]
+
+Extremely important for:
+
+volatility selling,
+straddles,
+strangles,
+spreads,
+delta hedging.
+D. Implied volatility
+𝐸
+[
+𝐼
+𝑉
+𝑡
++
+ℎ
+]
+E[IV
+t+h
+​
+
+]
+
+Useful for:
+
+volatility relative value,
+calendars,
+skew,
+option selection.
+E. Option fair value
+𝐸
+[
+𝐶
+𝑡
+∣
+𝑋
+𝑡
+]
+E[C
+t
+​
+
+∣X
+t
+​
+
+]
+
+Useful for:
+
+identifying mispricing,
+relative-value trading,
+market making.
+F. Probability of a profitable trade
+𝑃
+(
+𝑃
+𝑁
+𝐿
+>
+0
+∣
+𝑋
+𝑡
+)
+P(PNL>0∣X
+t
+​
+
+)
+
+Useful for:
+
+trade filtering,
+strategy selection.
+G. Optimal action
+𝑎
+𝑡
+∗
+=
+arg
+⁡
+max
+⁡
+𝑎
+𝐸
+[
+𝑈
+𝑡
+𝑖
+𝑙
+𝑖
+𝑡
+𝑦
+(
+𝑃
+𝑁
+𝐿
+)
+∣
+𝑠
+𝑡
+𝑎
+𝑡
+𝑒
+𝑡
+]
+a
+t
+∗
+​
+
+=arg
+a
+max
+​
+
+E[Utility(PNL)∣state
+t
+​
+
+]
+
+This is the reinforcement-learning problem.
+
+The critical distinction: prediction ≠ profitability
+
+This is one of the strongest conclusions from the research.
+
+A model can have:
+
+excellent RMSE
+
+but:
+
+terrible trading returns.
+
+Why?
+
+Because option prices contain:
+
+bid/ask spread,
+liquidity effects,
+volatility risk premium,
+skew,
+jumps,
+transaction costs,
+dealer inventory,
+early-exercise effects,
+discrete hedging costs.
+
+A 2026 study using 18.2 million minute-bar S&P 500 call observations explicitly compares model pricing error with realized P&L from a mechanical trading rule. The authors emphasize that lower pricing error does not necessarily translate into better trading performance.
+SSRN
+
+That should fundamentally change how you build the model.
+
+1. XGBoost / Gradient-Boosted Trees
+🥇 My #1 choice for most practical options ML
+
+If you gave me a serious options dataset and said:
+
+“Build the first profitable ML model.”
+
+I would probably start with XGBoost.
+
+Why?
+
+Options data is naturally tabular:
+
+underlying return
+IV
+VIX
+VIX term structure
+strike
+moneyness
+delta
+gamma
+theta
+vega
+DTE
+volume
+open interest
+bid/ask
+realized volatility
+skew
+term structure
+market regime
+earnings proximity
+macro variables.
+
+Tree boosting is exceptionally good at nonlinear interactions between these variables.
+
+For example:
+
+IV may be expensive only when VIX is high and skew is steep and realized volatility is falling.
+
+A linear model struggles with this.
+
+XGBoost can naturally learn it.
+
+Evidence
+
+An option-pricing study found that machine-learning methods outperform traditional Black-Scholes/Corrado-Su approaches, with additive boosting models showing the best prediction performance.
+ScienceDirect
+
+Another study comparing nonparametric option-pricing models found Extreme Gradient Boosting and Random Forest among the most accurate approaches across market regimes.
+PubMed Central (PMC)
+
+Research specifically on implied-volatility forecasting also evaluates XGBoost against neural networks and classical models, highlighting the importance of feature engineering and leakage control.
+Springer
+
+Best applications
+
+XGBoost is particularly strong for:
+
+IV prediction
+option mispricing classification
+probability-of-profit
+trade ranking
+volatility-regime classification
+directional signal
+expected return
+credit-spread selection.
+Weakness
+
+It doesn't naturally understand sequence structure as well as LSTM/Transformers.
+
+2. LSTM / Bidirectional LSTM
+🥈 Probably the strongest specialized model for option-IV forecasting
+
+LSTM is extremely relevant because volatility has memory.
+
+For example:
+
+High volatility today →
+
+often elevated volatility tomorrow →
+
+which can remain elevated for weeks.
+
+This is volatility clustering.
+
+NVIDIA's financial-ML presentation similarly highlights volatility persistence as one reason volatility is particularly suitable for ML.
+NVIDIA
+
+Very strong evidence
+
+A 2026 study of equity-option price history from 2018–2023 found that a bidirectional LSTM was the best forecasting architecture among the tested models when using pooled data across underlyings.
+Springer
+
+The study reports:
+
+LSTM: MSE ≈ 4.35%
+𝑅
+2
+R
+2
+≈ 53.06%
+convolutional LSTM: MSE ≈ 4.44%
+Bi-LSTM: MSE ≈ 4.65%
+ANN: MSE ≈ 4.97%
+
+The paper also found that universal models trained across multiple underlyings performed best, an extremely important observation for your future dataset design.
+Springer
+
+Another study of FX options found LSTM particularly effective for shorter maturities, while AR-GARCH performed better for longer maturities; LSTM also substantially outperformed Random Forest at short horizons.
+Springer
+
+Best applications
+IV forecasting
+short-horizon volatility
+earnings/event volatility
+option-price forecasting
+dynamic hedging
+regime detection.
+Weakness
+
+It requires more careful:
+
+normalization,
+sequence construction,
+hyperparameter tuning,
+leakage control,
+retraining.
+3. Transformer / Autoformer
+🥉 My highest-potential model for a large research operation
+
+Transformers are particularly interesting if you have:
+
+many stocks,
+many options,
+long histories,
+macro data,
+news,
+fundamentals,
+volatility surfaces,
+cross-asset data.
+
+A Transformer can learn relationships across long sequences and heterogeneous information.
+
+Strong recent evidence
+
+A 2025/26 study compared Autoformer with simpler neural networks using:
+
+all U.S. stocks,
+920 features,
+data going back to 1957,
+1-, 3-, and 12-month horizons.
+
+Autoformer consistently achieved lower out-of-sample MSE than the simpler neural networks, with especially strong improvements at longer horizons.
+ScienceDirect
+
+The important point is not:
+
+“Transformers always beat everything.”
+
+They don't.
+
+It's:
+
+When you have large, heterogeneous datasets and long temporal relationships, Transformers become much more attractive.
+
+4. LightGBM
+
+LightGBM is extremely attractive for options because option datasets can become enormous.
+
+Imagine:
+
+5,000 stocks
+10 years
+100 strikes
+20 expirations
+calls + puts
+daily observations.
+
+You quickly get millions/billions of rows.
+
+LightGBM is designed for efficient gradient boosting on large datasets.
+
+Option-specific evidence
+
+A 2026 NIFTY50 option-pricing study combines:
+
+VAE → LightGBM → Monte Carlo
+
+where LightGBM predicts implied volatility using market and investor-sentiment variables.
+
+The integrated framework reportedly improves option-pricing accuracy relative to Black-Scholes across moneyness and maturity segments.
+ScienceDirect
++1
+
+This is an especially interesting architecture because it shows how ML can be combined with classical derivative pricing rather than simply replacing it.
+
+5. Temporal Fusion Transformer
+
+TFT is one of the models I would investigate if your dataset contains many different information types.
+
+For example:
+
+Market
+returns
+volume
+realized volatility
+Options
+IV
+skew
+term structure
+Greeks
+Macro
+rates
+CPI
+unemployment
+credit spreads
+Fundamentals
+earnings
+valuation
+profitability
+Sentiment
+news
+earnings calls
+social media.
+
+TFT was explicitly designed for multi-horizon forecasting with heterogeneous inputs and includes feature-selection and attention mechanisms intended to make the model more interpretable.
+ScienceDirect
+
+A recent financial forecasting framework also combines TFT with probabilistic forecasting to produce point and interval predictions.
+ScienceDirect
+
+Best use
+
+I would use TFT to predict:
+
+future IV,
+future RV,
+expected return distribution,
+probability of large move,
+multi-horizon volatility.
+6. GRU
+
+GRU is similar to LSTM but generally simpler.
+
+It has:
+
+fewer parameters,
+faster training,
+lower computational cost.
+
+Its relevance to options is unusually strong.
+
+A Journal of Banking & Finance paper developed GRUδ, a sequential option-hedging model using S&P 500 European option-market data.
+
+It reported that weekly and monthly hedging performance significantly surpassed several competing data-driven and classical approaches.
+ScienceDirect
+
+Best use
+delta hedging
+IV forecasting
+sequential option signals.
+LSTM vs GRU
+
+I'd test both.
+
+Don't assume LSTM wins.
+
+7. Random Forest
+
+Random Forest is one of the most useful models to have in your research stack because it is:
+
+robust,
+nonlinear,
+relatively hard to completely destroy through overfitting,
+interpretable through feature importance,
+strong with mixed predictors.
+
+Option-pricing research found Random Forest among the best-performing nonparametric models across market regimes.
+PubMed Central (PMC)
+
+But there is an important counterexample:
+
+In FX-option IV forecasting, Random Forest was the worst of the compared models, particularly relative to LSTM and AR-GARCH.
+Springer
+
+This is exactly why:
+
+There is no universally best ML algorithm.
+
+8. MLP / feed-forward neural network
+
+Don't overlook the boring model.
+
+For cross-sectional financial prediction, simple neural networks have historically been remarkably competitive.
+
+The famous Gu–Kelly–Xiu study compared:
+
+elastic net,
+dimension reduction,
+random forest,
+boosted trees,
+neural networks.
+
+Their neural networks achieved monthly stock-level out-of-sample
+𝑅
+2
+R
+2
+around 0.33–0.40%, with the best performance around three hidden layers.
+OUP Academic
++1
+
+More importantly:
+
+Their neural-network S&P 500 timing strategy
+
+produced an annualized out-of-sample Sharpe of:
+
+0.77
+
+versus:
+
+0.51
+
+for buy-and-hold.
+
+Their value-weighted long-short stock strategy achieved:
+
+1.35 Sharpe.
+
+That's one of the strongest pieces of evidence in the entire ML-finance literature that prediction can translate into economic value.
+OUP Academic
+
+9. Graph Neural Networks
+
+This is one of the most exciting models specifically for options.
+
+Why?
+
+Because options aren't independent.
+
+Consider:
+
+SPX 5000 call, 30D
+
+SPX 5050 call, 30D
+
+SPX 5100 call, 30D
+
+SPX 5000 put, 30D
+
+SPX 5000 call, 60D
+
+These contracts are structurally related.
+
+Traditional models often treat each option independently.
+
+A GNN can represent the entire option chain as a graph.
+
+Evidence
+
+A Journal of Futures Markets study created a deep GNN incorporating momentum spillover effects among related options using SSE 50 ETF options.
+
+The model improved RMSE by at least 8.81% relative to classical models.
+Wiley Online Library
++1
+
+A new 2026 study goes even further, representing the option chain as a multi-relational graph where contracts connect through:
+
+expiry,
+strike,
+option type,
+time-series relationships.
+SSRN
+My view
+
+GNN is probably one of the most promising next-generation option-specific architectures.
+
+10. PPO — Proximal Policy Optimization
+
+This is fundamentally different.
+
+Instead of:
+
+predict tomorrow's volatility
+
+you ask:
+
+what should the trading agent do?
+
+Possible actions:
+
+buy call,
+sell call,
+buy put,
+sell put,
+hold,
+hedge,
+roll,
+change position size.
+
+PPO is attractive because it handles sequential decision-making.
+
+Option evidence
+
+Recent research compares eight deep-RL algorithms for dynamic option hedging.
+
+The study found:
+
+Monte Carlo Policy Gradient
+
+followed by:
+
+PPO
+
+performed best according to its root semi-quadratic penalty metric, while Monte Carlo Policy Gradient was the only method to outperform the Black-Scholes delta hedge under its computational budget.
+arXiv
+
+Another 2026 study uses risk-aware RL with transaction costs and finds that a learned policy improved risk-adjusted performance relative to no-hedge, momentum and volatility-targeting baselines, although the authors explicitly stop short of claiming formal dominance.
+arXiv
+
+That caution is important.
+
+11. DDPG / TD3
+
+These are especially useful when the action is continuous.
+
+For example:
+
+How many shares should I trade to hedge my option?
+
+Rather than:
+
+buy/sell
+
+you want:
+
+𝑎
+𝑡
+=
+−
+0.73
+Δ
+a
+t
+​
+
+=−0.73Δ
+
+or some continuously varying hedge ratio.
+
+DDPG has already been used for American-option hedging and reported performance improvements over Black-Scholes delta hedging under transaction costs in the cited experiments.
+arXiv
++1
+
+12. CNN
+
+CNNs aren't only for images.
+
+You can transform an option surface into something resembling a 2D image:
+
+𝑆
+𝑡
+𝑟
+𝑖
+𝑘
+𝑒
+×
+𝑀
+𝑎
+𝑡
+𝑢
+𝑟
+𝑖
+𝑡
+𝑦
+Strike×Maturity
+
+with:
+
+𝐼
+𝑉
+(
+𝐾
+,
+𝑇
+)
+IV(K,T)
+
+as the pixel/value.
+
+Then CNNs can learn:
+
+smile,
+skew,
+term structure,
+local surface patterns.
+
+A 2025 empirical study using SSE 50 ETF options found a CNN could predict implied volatility and outperform backpropagation networks, capturing volatility-smile and term-structure effects.
+ScienceDirect
+
+This is a very natural architecture for options.
+
+13. Variational Autoencoder
+
+VAE is particularly interesting for options because the objective isn't necessarily:
+
+predict price.
+
+It can instead learn:
+
+the latent structure of the market distribution.
+
+A 2026 option-pricing study combines:
+
+VAE
+
+to learn return distributions,
+
+with:
+
+LightGBM
+
+to forecast implied volatility,
+
+then:
+
+Monte Carlo
+
+to price options.
+
+The VAE is explicitly designed to reproduce features such as:
+
+skewness,
+kurtosis,
+fat tails.
+
+The resulting framework outperformed conventional Black-Scholes pricing in the tested NIFTY50 option data.
+ScienceDirect
++1
+
+14. Neural SDE
+
+This is a more institutional/research-oriented architecture.
+
+Instead of treating ML as a black-box prediction function, neural SDEs learn components of the stochastic process itself.
+
+For example:
+
+𝑑
+𝑆
+𝑡
+=
+𝜇
+𝜃
+(
+𝑆
+𝑡
+,
+𝑡
+)
+𝑑
+𝑡
++
+𝜎
+𝜃
+(
+𝑆
+𝑡
+,
+𝑡
+)
+𝑑
+𝑊
+𝑡
+dS
+t
+​
+
+=μ
+θ
+​
+
+(S
+t
+​
+
+,t)dt+σ
+θ
+​
+
+(S
+t
+​
+
+,t)dW
+t
+​
+
+where:
+
+𝜇
+𝜃
+,
+𝜎
+𝜃
+μ
+θ
+​
+
+,σ
+θ
+​
+
+are neural networks.
+
+This is extremely interesting because you can use the learned process to:
+
+price derivatives,
+simulate future paths,
+calculate risk,
+construct hedges.
+
+Research on neural-SDE derivative pricing has demonstrated applications to S&P 500, S&P 100 and single-stock options and compares neural-SDE models with Black-Scholes, Dupire and Heston.
+arXiv
++1
+
+15. Gaussian Process / Deep Kernel Learning
+
+Gaussian Processes are attractive when:
+
+datasets aren't enormous,
+uncertainty estimation matters,
+smoothness is important,
+you need confidence intervals.
+
+A 2026 paper develops constrained Gaussian-process regression for American-option pricing and reports accurate pricing without numerical differentiation or grids across Black-Scholes, Heston and two-factor Hull-White environments.
+ScienceDirect
+
+Deep-kernel Gaussian processes have also been shown to outperform Least-Squares Monte Carlo for high-dimensional American options, particularly under jump-diffusion models.
+IDEAS/RePEc
+
+Major advantage
+
+You get:
+
+prediction + uncertainty.
+
+That is extremely valuable in trading.
+
+16. N-BEATS / N-BEATS-GAN
+
+N-BEATS is designed specifically for time-series forecasting.
+
+It can be useful for:
+
+realized volatility,
+implied volatility,
+macro variables,
+option demand,
+volume/open interest.
+
+Recent financial research combines N-BEATS with GAN-based risk modeling to create N-BEATS-GAN and reports improvements over N-BEATS and other models on multi-series financial forecasting, including risk quantification.
+ScienceDirect
+
+However:
+
+I would not put it above XGBoost/LSTM/Transformer for options today.
+
+There simply isn't enough option-specific evidence yet.
+
+17. Elastic Net
+
+This may seem boring.
+
+But you absolutely need it.
+
+Elastic Net:
+
+𝐿
+(
+𝛽
+)
+=
+𝑅
+𝑆
+𝑆
++
+𝜆
+1
+∣
+𝛽
+∣
++
+𝜆
+2
+∥
+𝛽
+∥
+2
+L(β)=RSS+λ
+1
+​
+
+∣β∣+λ
+2
+​
+
+∥β∥
+2
+
+provides:
+
+shrinkage,
+variable selection,
+regularization,
+interpretability.
+
+Gu–Kelly–Xiu showed that Elastic Net dramatically improved over unrestricted OLS in high-dimensional return prediction, with positive out-of-sample
+𝑅
+2
+R
+2
+where unrestricted OLS failed.
+OUP Academic
++1
+
+It should be a benchmark model.
+
+If your fancy Transformer can't beat Elastic Net after costs, don't deploy the Transformer.
+
+18. Support Vector Regression
+
+SVR remains useful when:
+
+dataset size is moderate,
+relationship is nonlinear,
+feature dimension isn't enormous.
+
+It was among the ML models evaluated in option-pricing research, and more recent volatility studies continue to use SVM/SVR as benchmark nonlinear models.
+PubMed Central (PMC)
++1
+
+Weakness
+
+It becomes computationally unattractive at massive scale.
+
+19. CatBoost
+
+CatBoost is another gradient-boosting architecture.
+
+Its advantage becomes interesting when you have categorical variables such as:
+
+sector,
+underlying,
+exchange,
+option type,
+market regime,
+expiry bucket.
+
+CatBoost's implementation is designed for categorical features and includes regularization mechanisms intended to reduce overfitting.
+GitHub
++1
+
+A recent option-pricing study explicitly compares CatBoost, Random Forest and neural networks against Black-Scholes/Heston using real and synthetic option data and reports that ML methods can outperform traditional models in several configurations.
+arXiv
+
+20. Ensembles / stacking
+
+This is the model architecture I would ultimately expect to be most useful in production.
+
+For example:
+
+Model A
+
+XGBoost
+
+predicts:
+
+𝐸
+𝑥
+𝑝
+𝑒
+𝑐
+𝑡
+𝑒
+𝑑
+
+𝑅
+𝑉
+Expected RV
+Model B
+
+LSTM
+
+predicts:
+
+𝐹
+𝑢
+𝑡
+𝑢
+𝑟
+𝑒
+
+𝐼
+𝑉
+Future IV
+Model C
+
+Transformer
+
+predicts:
+
+𝐸
+𝑥
+𝑝
+𝑒
+𝑐
+𝑡
+𝑒
+𝑑
+
+𝑟
+𝑒
+𝑡
+𝑢
+𝑟
+𝑛
+Expected return
+Model D
+
+GNN
+
+predicts:
+
+𝑂
+𝑝
+𝑡
+𝑖
+𝑜
+𝑛
+
+𝑠
+𝑢
+𝑟
+𝑓
+𝑎
+𝑐
+𝑒
+Option surface
+Model E
+
+PPO
+
+chooses:
+
+𝑃
+𝑜
+𝑠
+𝑖
+𝑡
+𝑖
+𝑜
+𝑛
+
+𝑠
+𝑖
+𝑧
+𝑒
+Position size
+
+Then combine them.
+
+This isn't theoretical fantasy. Research on statistical arbitrage found that an equal-weighted combination of deep neural networks + gradient-boosted trees + random forests produced the strongest performance among the tested individual/combined approaches.
+ScienceDirect
++1
+
+The most important research result for you
+
+There is a recurring pattern throughout the literature:
+
+Simple models often win when data is limited.
+Complex models become more attractive as data quality and quantity increase.
+
+This is exactly what Gu–Kelly–Xiu found.
+
+Their neural-network performance actually peaked at around three hidden layers, with deeper networks performing worse.
+OUP Academic
++1
+
+The lesson is:
+
+Don't build a giant Transformer just because you can.
+
+Finance has:
+
+low signal-to-noise,
+nonstationarity,
+relatively few independent observations,
+changing regimes.
+
+That is very different from image recognition or language modeling.
+
+The top models by task
+
+This is actually more useful than one universal ranking.
+
+If predicting realized volatility
+
+My ranking:
+
+LSTM
+XGBoost
+LightGBM
+GRU
+Transformer
+TFT
+Random Forest
+Elastic Net
+MLP
+N-BEATS
+
+Recent volatility research finds ML models can outperform HAR-type benchmarks at short horizons, but gains diminish at longer horizons; predictor quality matters enormously.
+ScienceDirect
+
+If predicting implied volatility
+
+My ranking:
+
+LSTM/Bi-LSTM
+XGBoost
+LightGBM
+Transformer
+CNN
+GRU
+TFT
+Random Forest
+MLP
+Elastic Net
+
+The 2026 equity-option study provides particularly strong evidence for LSTM/Bi-LSTM here.
+Springer
+
+If pricing options
+
+My ranking:
+
+XGBoost
+LightGBM
+MLP
+GNN
+Neural SDE
+VAE + ML
+Random Forest
+Gaussian Process
+CNN
+CatBoost
+
+Nonparametric tree models have repeatedly demonstrated strong pricing accuracy, while newer GNN and VAE approaches are particularly interesting because they model relationships between contracts rather than treating each option independently.
+PubMed Central (PMC)
++2
+
+If predicting stock direction for options
+
+I'd use:
+
+XGBoost
+MLP
+Random Forest
+Transformer/Autoformer
+LightGBM
+LSTM
+TFT
+Elastic Net
+GRU
+SVR
+
+Gu–Kelly–Xiu's work strongly supports nonlinear trees and neural networks for return-premium prediction.
+OUP Academic
+
+If dynamically hedging options
+
+My ranking changes dramatically:
+
+PPO
+Policy-gradient RL
+DDPG/TD3
+GRU
+LSTM
+Deep hedging
+Neural SDE
+TFT
+XGBoost
+MLP
+
+Recent research explicitly shows the importance of comparing RL algorithms against Black-Scholes delta hedging under transaction costs rather than only looking at model fit.
+arXiv
++1
+
+The most important success factors for an ML trading model
+
+Now we get to the part I consider more important than the choice between XGBoost and LSTM.
+
+I would rank the factors as follows.
+
+Rank Factor Importance
+1 Data quality 10/10
+2 Leakage prevention 10/10
+3 Target definition 10/10
+4 Transaction-cost realism 10/10
+5 Out-of-sample validation 10/10
+6 Regime robustness 9.9/10
+7 Feature quality 9.8/10
+8 Position sizing 9.8/10
+9 Tail-risk management 9.8/10
+10 Nonstationarity handling 9.7/10
+11 Model calibration 9.5/10
+12 Objective/loss function 9.5/10
+13 Ensemble diversity 9.4/10
+14 Interpretability 9.0/10
+15 Computational efficiency 8.5/10
+16 Hyperparameter optimization 8.5/10
+17 Retraining frequency 8.5/10
+18 Uncertainty estimation 8.5/10
+19 Execution infrastructure 8.5/10
+20 Model governance 8/10
+1. Data quality — #1
+
+For options, this is absolutely enormous.
+
+You want:
+
+Underlying
+OHLCV
+adjusted prices
+corporate actions
+dividends
+Options
+bid
+ask
+midpoint
+last
+volume
+open interest
+strike
+expiration
+option type
+IV
+Greeks
+Market
+VIX
+VIX futures
+VIX options
+Treasury yields
+credit spreads
+market breadth
+Macro
+CPI
+jobs
+rates
+Fed
+GDP
+liquidity.
+Alternative
+news sentiment
+earnings calls
+analyst revisions
+options flow
+institutional positioning.
+
+The 2026 fundamental-indicator survey of 54 empirical studies highlights how much model performance depends on the feature family and task; it finds, for example, Random Forest especially associated with return prediction and LSTM with price prediction.
+Springer
+
+2. Leakage — potentially the #1 reason fake ML strategies work
+
+This is critical.
+
+Suppose you predict tomorrow's return using today's:
+
+closing IV
+
+Fine.
+
+But if your dataset accidentally contains:
+
+tomorrow's closing IV
+
+you have a completely fraudulent model.
+
+Options data has especially complicated leakage problems because:
+
+contracts disappear,
+expirations change,
+IV is derived from prices,
+bid/ask updates asynchronously,
+corporate actions modify strikes,
+survivorship bias exists,
+delisted stocks disappear.
+
+Recent research specifically warns about data leakage in implied-volatility forecasting, especially when high-complexity models are applied to financial data.
+Springer
+
+3. Target definition
+
+This is underrated.
+
+Don't simply predict:
+
+𝑂
+𝑝
+𝑡
+𝑖
+𝑜
+𝑛
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+𝑡
++
+1
+OptionPrice
+t+1
+​
+
+Instead consider predicting:
+
+Future IV
+𝐼
+𝑉
+𝑡
++
+ℎ
+IV
+t+h
+​
+
+IV change
+Δ
+𝐼
+𝑉
+ΔIV
+Relative mispricing
+𝑀
+𝑎
+𝑟
+𝑘
+𝑒
+𝑡
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+−
+𝐹
+𝑎
+𝑖
+𝑟
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+MarketPrice−FairPrice
+Future realized volatility
+𝑅
+𝑉
+𝑡
+,
+𝑡
++
+ℎ
+RV
+t,t+h
+​
+
+Expected trade P&L
+𝐸
+[
+𝑃
+𝑁
+𝐿
+∣
+𝑋
+]
+E[PNL∣X]
+Probability of positive P&L
+𝑃
+(
+𝑃
+𝑁
+𝐿
+>
+0
+∣
+𝑋
+)
+P(PNL>0∣X)
+
+The last two can be much more useful for actual trading.
+
+4. Transaction costs
+
+This deserves an enormous warning.
+
+A model predicting:
+
++
+0.20
+%
++0.20%
+
+per trade is worthless if:
+
+𝑐
+𝑜
+𝑠
+𝑡
+=
+0.35
+%
+.
+cost=0.35%.
+
+Recent walk-forward ML research demonstrates exactly this problem: XGBoost, LSTM and iTransformer generated positive gross trading results in selected configurations, but naive trading signals failed after a 10-basis-point transaction cost; a cost-aware forecast threshold restored profitability in selected configurations.
+SSRN
+
+That is a major lesson for options.
+
+5. Prediction metrics aren't enough
+
+You should track two completely separate groups.
+
+Prediction
+RMSE
+MAE
+MAPE
+𝑅
+2
+R
+2
+directional accuracy
+log loss
+Brier score
+calibration error.
+Trading
+CAGR
+Sharpe
+Sortino
+Calmar
+max drawdown
+expected shortfall
+turnover
+profit factor
+average trade
+win rate
+average loss
+tail loss.
+
+And ideally:
+
+𝑆
+ℎ
+𝑎
+𝑟
+𝑝
+𝑒
+𝑛
+𝑒
+𝑡
+Sharpe
+net
+​
+
+after:
+
+spread,
+commission,
+slippage,
+market impact.
+
+The 2026 intraday ML research explicitly argues that prediction accuracy alone does not guarantee stable financial performance; execution and infrastructure matter substantially.
+Springer
+
+6. Regime robustness
+
+A model that works in:
+
+2017–2019
+
+may collapse in:
+
+2020
+
+and then behave differently again in:
+
+2022
+
+or:
+
+2025–2026.
+
+This is particularly important for options because the market alternates between:
+
+low volatility,
+volatility expansion,
+crashes,
+rate shocks,
+liquidity crises.
+
+A recent volatility study finds ML advantages depend strongly on forecast horizon and market environment.
+ScienceDirect
+
+7. Feature engineering
+
+For options, I would create features in at least 10 categories.
+
+Price
+returns
+momentum
+reversal
+trend
+gaps.
+Volatility
+RV
+Parkinson volatility
+Garman-Klass
+realized quarticity
+volatility of volatility.
+Options
+ATM IV
+10Δ IV
+25Δ IV
+skew
+term structure
+IV percentile
+IV-RV spread.
+Greeks
+delta
+gamma
+theta
+vega.
+Flow
+volume
+OI
+volume/OI
+put/call volume
+put/call OI.
+Liquidity
+bid/ask spread
+depth
+turnover.
+Market
+VIX
+VIX9D
+VIX3M
+VVIX.
+Macro
+rates
+credit spreads
+dollar
+commodities.
+Sentiment
+news
+earnings
+analyst revisions.
+One of the strongest recurring findings
+
+Gu–Kelly–Xiu found that the most powerful predictors included:
+
+momentum + liquidity + volatility.
+
+Their nonlinear models gained predictive power specifically because they could model interactions between these variables.
+OUP Academic
+
+That is extremely relevant to options.
+
+For example:
+
+momentum alone might be weak.
+
+IV alone might be weak.
+
+liquidity alone might be weak.
+
+But:
+
+𝑀
+𝑜
+𝑚
+𝑒
+𝑛
+𝑡
+𝑢
+𝑚
+×
+𝐼
+𝑉
+×
+𝐿
+𝑖
+𝑞
+𝑢
+𝑖
+𝑑
+𝑖
+𝑡
+𝑦
+Momentum×IV×Liquidity
+
+can be highly informative.
+
+This is precisely where tree ensembles and neural networks can help.
+
+A crucial concept: universal models
+
+One of the most interesting findings in the 2026 option-price study was that models trained on pooled data across many underlyings performed better than isolated models.
+Springer
+
+That suggests an architecture like:
+
+All stocks
+→
+shared model
+→
+underlying-specific embedding
+All stocks→shared model→underlying-specific embedding
+
+could be superior to:
+
+one model for AAPL
+one model for NVDA
+one model for SPY
+one model for QQQ.
+
+This gives the model far more observations.
+
+Another important insight: options should probably be modeled as a surface
+
+Traditional ML:
+
+one row = one option.
+
+Better:
+
+one observation = entire option surface.
+
+For example:
+
+𝐼
+𝑉
+(
+𝐾
+,
+𝑇
+)
+IV(K,T)
+
+where:
+
+𝐾
+K = strike
+𝑇
+T = maturity.
+
+Then use:
+
+CNN
+
+for local surface patterns.
+
+Transformer
+
+for temporal evolution.
+
+GNN
+
+for relationships among contracts.
+
+VAE
+
+for dimensionality reduction.
+
+This is potentially much more powerful than treating every contract independently.
+
+My preferred architecture for a serious options ML system
+
+If I were designing this from scratch, I would not choose one model.
+
+I would construct:
+
+Layer 1 — Market representation
+
+VAE / PCA / autoencoder
+
+compress:
+
+𝐼
+𝑉
+(
+𝐾
+,
+𝑇
+)
+IV(K,T)
+
+into latent factors.
+
+Layer 2 — Volatility prediction
+
+Use:
+
+LSTM + XGBoost + Transformer ensemble
+
+to predict:
+
+𝑅
+𝑉
+7
+𝑑
+RV
+7d
+​
+
+𝑅
+𝑉
+30
+𝑑
+RV
+30d
+​
+
+𝐼
+𝑉
+7
+𝑑
+IV
+7d
+​
+
+𝐼
+𝑉
+30
+𝑑
+IV
+30d
+​
+
+Layer 3 — Mispricing
+
+Calculate:
+
+𝐹
+𝑎
+𝑖
+𝑟
+𝐼
+𝑉
+−
+𝑀
+𝑎
+𝑟
+𝑘
+𝑒
+𝑡
+𝐼
+𝑉
+FairIV−MarketIV
+
+and:
+
+𝐹
+𝑎
+𝑖
+𝑟
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+−
+𝑀
+𝑎
+𝑟
+𝑘
+𝑒
+𝑡
+𝑃
+𝑟
+𝑖
+𝑐
+𝑒
+FairPrice−MarketPrice
+Layer 4 — Probability model
+
+XGBoost predicts:
+
+𝑃
+(
+𝑃
+𝑁
+𝐿
+>
+0
+)
+P(PNL>0)
+
+and:
+
+𝐸
+[
+𝑃
+𝑁
+𝐿
+]
+.
+E[PNL].
+Layer 5 — Risk model
+
+Separate ML model predicts:
+
+tail risk,
+expected shortfall,
+volatility,
+correlation.
+Layer 6 — Position sizing
+
+PPO or another RL model decides:
+
+𝑃
+𝑜
+𝑠
+𝑖
+𝑡
+𝑖
+𝑜
+𝑛
+𝑆
+𝑖
+𝑧
+𝑒
+PositionSize
+
+subject to:
+
+maximum loss,
+margin,
+portfolio Greeks,
+correlation.
+The resulting architecture
+
+Conceptually:
+
+Plain text
+MARKET DATA
+│
+┌────────────┼────────────┐
+↓ ↓ ↓
+Price Options Macro
+│ │ │
+└────────────┼────────────┘
+↓
+FEATURE ENGINE
+│
+┌──────────┼──────────┐
+↓ ↓ ↓
+XGB LSTM Transformer
+│ │ │
+└──────────┼──────────┘
+↓
+VOLATILITY MODEL
+│
+↓
+FAIR VALUE MODEL
+│
+┌──────┴──────┐
+↓ ↓
+Expected PNL P(PNL>0)
+│ │
+└──────┬──────┘
+↓
+RISK MODEL
+│
+↓
+POSITION SIZING
+│
+↓
+RL
+│
+↓
+EXECUTION
+│
+↓
+REALIZED P&L
+│
+↓
+ONLINE MONITORING
+
+This is much closer to how I would approach an actual quantitative research project.
+
+What I would NOT do
+❌ Build LSTM directly on closing prices
+
+Too little information.
+
+❌ Predict exact option price and trade whenever prediction > market
+
+The 2026 evidence specifically warns that pricing accuracy doesn't necessarily produce trading profitability.
+SSRN
+
+❌ Use accuracy as your main metric
+
+60% directional accuracy can lose money.
+
+45% accuracy can make money.
+
+❌ Train on random train/test splits
+
+Financial data is temporal.
+
+Use:
+
+walk-forward validation.
+
+❌ Optimize Sharpe on one historical period
+
+You'll overfit.
+
+❌ Use 500 indicators without regularization
+
+More features ≠ more information.
+
+❌ Ignore bid/ask
+
+For options, this can completely destroy a strategy.
+
+❌ Use one model forever
+
+Financial distributions change.
+
+How I would evaluate the ML model
+
+Use a three-layer validation system.
+
+Layer 1 — Statistical
+
+Does the model predict?
+
+IV?
+RV?
+returns?
+price?
+Layer 2 — Economic
+
+Does prediction translate into:
+
+positive expectancy?
+Sharpe?
+Sortino?
+low drawdown?
+Layer 3 — Execution
+
+Does it remain profitable after:
+
+spread?
+commission?
+slippage?
+market impact?
+latency?
+
+Only if all three pass should you consider deployment.
+
+Walk-forward testing
+
+I strongly recommend something like:
+
+Training
+
+2010–2018
+
+Validation
+
+2019–2020
+
+Test
+
+2021
+
+Then:
+
+Training
+
+2010–2019
+
+Validation
+
+2020–2021
+
+Test
+
+2022
+
+Then roll forward.
+
+This is much more realistic than:
+
+80% random training / 20% random testing.
+
+Add a fourth test: crisis test
+
+Your model should be separately evaluated during:
+
+2008
+2020
+2022
+major volatility spikes
+sudden gap events.
+
+For options, this is absolutely critical.
+
+A model's learning capability
+
+You specifically asked about learning capability, so I'd rank these characteristics:
+
+1. Nonlinearity
+
+Can it learn:
+
+𝑋
+1
+×
+𝑋
+2
+×
+𝑋
+3
+?
+X
+1
+​
+
+×X
+2
+​
+
+×X
+3
+​
+
+?
+2. Temporal memory
+
+Can it remember:
+
+𝑉
+𝑜
+𝑙
+𝑎
+𝑡
+𝑖
+𝑙
+𝑖
+𝑡
+𝑦
+𝑡
+−
+1
+,
+𝑉
+𝑜
+𝑙
+𝑎
+𝑡
+𝑖
+𝑙
+𝑖
+𝑡
+𝑦
+𝑡
+−
+2
+,
+.
+.
+.
+Volatility
+t−1
+​
+
+,Volatility
+t−2
+​
+
+,...
+3. Cross-sectional learning
+
+Can it learn relationships across thousands of stocks/options?
+
+4. Regime adaptation
+
+Can it recognize:
+
+𝐿
+𝑜
+𝑤
+𝑉
+𝑜
+𝑙
+→
+𝐻
+𝑖
+𝑔
+ℎ
+𝑉
+𝑜
+𝑙
+LowVol→HighVol
+
+?
+
+5. Transfer learning
+
+Can knowledge learned on SPY transfer to QQQ?
+
+6. Uncertainty estimation
+
+Does it know when:
+
+“I don't know”?
+
+7. Online adaptation
+
+Can it update as market conditions change?
+
+8. Robustness to missing data
+
+Very important in real market feeds.
+
+9. Interpretability
+
+Can you determine why it entered the trade?
+
+10. Computational efficiency
+
+Can it be retrained daily/hourly?
+
+Why uncertainty may be more important than raw prediction
+
+Suppose two models say:
+
+Model A
+
+Expected return:
+
++1%
+
+confidence:
+
+51%.
+
+Model B
+
+Expected return:
+
++0.6%
+
+confidence:
+
+92%.
+
+I'd generally prefer Model B.
+
+You don't only want:
+
+𝐸
+[
+𝑌
+]
+E[Y]
+
+You want:
+
+𝑃
+(
+𝑌
+>
+𝑡
+ℎ
+𝑟
+𝑒
+𝑠
+ℎ
+𝑜
+𝑙
+𝑑
+)
+P(Y>threshold)
+
+and ideally:
+
+𝑃
+(
+𝑌
+<
+−
+loss limit
+)
+P(Y<−loss limit)
+
+as well.
+
+This is especially important for option selling.
+
+Model calibration
+
+For classification:
+
+Don't just ask:
+
+Is the model 70% accurate?
+
+Ask:
+
+When the model says 70%, does the event actually happen about 70% of the time?
+
+Use:
+
+reliability diagrams,
+Brier score,
+calibration curves,
+isotonic regression,
+Platt scaling.
+
+A calibrated 70% probability can be enormously valuable for trade selection.
+
+The model should predict distributions, not just point estimates
+
+Instead of:
+
+𝑅
+^
+=
+0.8
+%
+R
+^
+=0.8%
+
+I would prefer:
+
+𝑅
+∼
+𝑃
+(
+𝑅
+∣
+𝑋
+)
+R∼P(R∣X)
+
+Then you can estimate:
+
+expected return,
+downside,
+probability of profit,
+expected shortfall,
+probability of large move.
+
+This is especially powerful for options.
+
+The role of LLMs
+
+I would not rank an LLM as a top standalone numerical option-price predictor.
+
+Instead, use it for:
+
+News
+
+Extract:
+
+sentiment,
+surprise,
+risk,
+uncertainty.
+Earnings calls
+
+Extract:
+
+management confidence,
+guidance changes,
+uncertainty.
+SEC filings
+
+Extract:
+
+risk-factor changes,
+liquidity concerns,
+legal issues.
+Central-bank communication
+
+Extract:
+
+hawkish/dovish language,
+uncertainty,
+policy regime.
+
+This matches current institutional thinking: the IMF reports that AI/ML is increasingly used throughout capital markets, while generative AI is particularly useful for processing large amounts of unstructured information.
+IMF
++1
+
+The BIS similarly describes LLMs as useful for analyzing news and data after ML models identify important market-stress drivers.
+Bank for International Settlements
++1
+
+Very important institutional warning
+
+The Bank of England's 2026 Financial Stability Report says financial firms are currently using more autonomous AI primarily for research, coding, surveillance and other lower-risk functions rather than fully autonomous trading. It also highlights the difficulty of validating and bounding AI systems when market conditions and economic relationships change.
+Bank of England
+
+The IMF similarly warns that AI can improve efficiency and liquidity while simultaneously increasing:
+
+opacity,
+correlated behavior,
+volatility,
+cyber risk,
+concentration risk.
+IMF
+
+This is important for your project:
+
+A profitable ML model can become less profitable when everyone else discovers the same signal.
+
+My final ranking by practical value
+
+If you are actually going to build an options ML system, this is the order I'd investigate:
+
+Tier 1 — Start here
+
+1. XGBoost
+
+2. LSTM
+
+3. LightGBM
+
+4. Transformer/Autoformer
+
+5. Random Forest
+
+These give you the best combination of evidence, practicality and performance.
+
+Tier 2 — Serious advanced research
+
+6. TFT
+
+7. GRU
+
+8. MLP
+
+9. GNN
+
+10. CNN
+
+Tier 3 — Advanced derivative modeling
+
+11. PPO
+
+12. DDPG/TD3
+
+13. Neural SDE
+
+14. VAE
+
+15. Gaussian Process / Deep Kernel
+
+Tier 4 — Complementary models
+
+16. N-BEATS
+
+17. Elastic Net
+
+18. SVR
+
+19. CatBoost
+
+20. Ensemble/stacking framework
+
+But if I had to choose only five
+
+For your specific goal—profitable options trading—I'd build:
+
+🥇 XGBoost
+
+For:
+
+trade selection + IV/RV spread + probability of profit
+
+🥈 LSTM
+
+For:
+
+volatility dynamics
+
+🥉 Transformer
+
+For:
+
+long-range + multi-source information
+
+4. GNN
+
+For:
+
+option-chain / volatility-surface relationships
+
+5. PPO
+
+For:
+
+position sizing + dynamic hedging
+
+And then combine them.
+
+The most promising overall architecture
+
+My highest-conviction research architecture would therefore be:
+
+𝐺
+𝑁
+𝑁
++
+𝐿
+𝑆
+𝑇
+𝑀
++
+𝑋
+𝐺
+𝐵
+𝑜
+𝑜
+𝑠
+𝑡
++
+𝑇
+𝑟
+𝑎
+𝑛
+𝑠
+𝑓
+𝑜
+𝑟
+𝑚
+𝑒
+𝑟
++
+𝑅
+𝐿
+GNN+LSTM+XGBoost+Transformer+RL
+​
+
+with different models doing different jobs.
+
+Not:
+
+Transformer
+→
+buy/sell
+Transformer→buy/sell
+
+but:
+
+Prediction
+→
+Fair Value
+→
+Risk
+→
+Position Size
+→
+Execution
+Prediction→Fair Value→Risk→Position Size→Execution
+​
+
+That's a much more defensible quantitative architecture.
+
+The biggest lesson from the research
+
+The research does not say:
+
+“Deep learning beats traditional ML.”
+
+It says something much more nuanced.
+
+Trees
+
+Excellent for nonlinear tabular data.
+
+LSTM/GRU
+
+Excellent when temporal volatility dynamics matter.
+
+Transformers
+
+Potentially powerful with large heterogeneous datasets and long dependencies.
+
+GNNs
+
+Potentially exceptional for the structure of option chains.
+
+RL
+
+Potentially useful for sequential decisions and hedging, but much harder to validate.
+
+Simple regularized models
+
+Still extremely important benchmarks.
+
+And the strongest evidence says:
+
+The model's economic objective, data, validation and execution can matter more than the architecture itself.
+
+The Office of Financial Research's new 2026 open benchmark makes essentially this broader point: no forecasting method is universally best across financial data-generating processes, so models need to be compared on the same data and forecasting task.
+Office of Financial Research
+
+Sources / research used
+
+I prioritized peer-reviewed papers, NBER/AQR research, central-bank and international-institution reports, and recent 2025–2026 research over generic “AI trading” websites.
+
+Option-specific ML research
+Predicting option prices from their price history — Review of Derivatives Research, 2026 — particularly important evidence for LSTM/Bi-LSTM and pooled/universal option models.
+Option pricing with neural networks vs. Black-Scholes — Borsa Istanbul Review — neural networks versus traditional option pricing under different volatility forecasts.
+Unlocking the black box: Non-parametric option pricing before and during COVID-19 — XGBoost/RF versus traditional models and regime robustness.
+Option pricing using Machine Learning — Expert Systems with Applications — boosting and ML versus traditional option-pricing models.
+Forecasting implied volatilities of currency options with ML and econometrics — LSTM, RF and AR-GARCH comparison.
+Examining challenges in implied-volatility forecasting — particularly useful for leakage/feature-engineering concerns.
+Improving Option Price Forecasts Using ML and Investor Sentiment — RF, XGBoost and LightGBM applied to options.
+Considering momentum spillover effects via GNN in option pricing — GNN and option-chain relationships; reported ≥8.81% RMSE improvement.
+Predicting Option Prices Using Graph Neural Networks — recent multi-relational option-chain GNN research.
+Prediction of the implied-volatility surface using CNNs — CNN-based volatility-surface forecasting.
+Variational autoencoders for option pricing — recent VAE + LightGBM + Monte Carlo framework for NIFTY50 options.
+Machine Learning Methods for Pricing Financial Derivatives — neural-SDE framework and real-market derivative pricing.
+Robust pricing and hedging via neural SDEs — neural SDE pricing/hedging.
+Gaussian-process pricing for American options — recent constrained-GP option pricing.
+Deep Kernel Learning for high-dimensional American options — GPR/DKL versus Longstaff-Schwartz.
+Learning sequential option hedging models from market data — GRU-based hedging.
+Deep Reinforcement Learning Algorithms for Option Hedging — comparison of eight RL algorithms.
+Hedging American Put Options with Deep Reinforcement Learning — DDPG-based hedging and transaction-cost experiments.
+Reinforcement Learning for Option Hedging: Static IV Fit versus Shortfall-Aware Performance — recent risk-aware RL and the crucial distinction between pricing fit and hedging outcomes.
+When Lower Pricing Error Trades Worse — exceptionally relevant evidence that pricing RMSE and trading profitability can diverge.
+General financial ML / prediction research
+Empirical Asset Pricing via Machine Learning — Review of Financial Studies — one of the foundational empirical comparisons of Elastic Net, RF, boosted trees and neural networks.
+NBER version of Empirical Asset Pricing via Machine Learning
+AQR discussion of Empirical Asset Pricing via Machine Learning
+Deep neural networks, gradient-boosted trees, random forests: Statistical arbitrage on the S&P 500 — evidence for ensembles and ML statistical arbitrage.
+Machine learning for stock return prediction: Transformers or simple neural networks — Autoformer versus neural-network baselines using 920 features and long U.S. stock history.
+Machine-learning stock-market volatility: Predictability, drivers and economic value — short-horizon ML volatility forecasting and economic value.
+Prediction of realized and implied volatility using AI/ML — systematic review
+Deep learning in the stock market — systematic survey — large literature review focused specifically on backtested applications.
+2026 survey of fundamental indicators and ML techniques — 54 empirical studies, 544 fundamental indicators and model/task relationships.
+Open benchmark of time-series forecasting methods across financial markets — Office of Financial Research, 2026 — especially relevant to model comparison and the absence of a universally best forecasting architecture.
+Banks / central banks / international institutions
+Bank of England Financial Stability Report — July 2026 — current institutional view of autonomous AI and trading-model risks.
+BIS — Using machine learning to monitor financial markets — RF/RNN financial-stress prediction and LLM-assisted analysis.
+BIS — Harnessing artificial intelligence for monitoring financial markets — RNN with 100+ market indicators and explainable AI.
+IMF — Artificial Intelligence and its Impact on Financial Markets and Financial Stability — institutional AI/ML adoption in capital markets.
+IMF Global Financial Stability Report — AI and Capital Markets — institutional discussion of AI, algorithmic trading and market stability.
+IMF — Artificial Intelligence Can Make Markets More Efficient—and More Volatile — important systemic-risk discussion.
+MSCI — Transparency and Insights into Nonlinear Factor Effects Through Market Regimes — recent use of ML/SHAP for nonlinear factor effects and regime analysis.
+My strongest recommendation for the next stage
+
+Given your previous question about profitable option strategies, the most useful next step is not another literature list. It would be to combine the two studies into a complete ML options-trading research framework:
+
+Top 20 option strategies × Top 20 ML models × features × DTE × delta × IV/RV × VIX regime × transaction costs × walk-forward testing × Sharpe × Sortino × max drawdown × CVaR × probability of profit.
+
+That would let us identify, for example, whether XGBoost + 30–45 DTE 20-delta put spreads during specific IV/RV regimes actually has a statistically and economically defensible edge, rather than merely concluding that XGBoost is a “good model.”
+
+You said:
+
+before moving to combine the two studies into a complete ML options-trading research framework:
+Top 20 option strategies × Top 20 ML models × features × DTE × delta × IV/RV × VIX regime × transaction costs × walk-forward testing × Sharpe × Sortino × max drawdown × CVaR × probability of profit.
+give me summary table of all ML methods include why is good, and is it suitable for Intraday option trading, daily option trading or for medium term trading or long term trading
+
+ChatGPT said:
+
+Absolutely. For the complete ML options-trading framework, I would classify the 20 models by the trading horizon they are naturally suited to—not just by their raw predictive accuracy.
+
+One important refinement from the deeper literature review: “intraday,” “daily,” “medium-term,” and “long-term” should be interpreted as the prediction/rebalancing horizon, not as a claim that a model will automatically be profitable at that horizon. Recent option research shows that data richness, pooled cross-sectional information, transaction costs, and the distinction between static pricing accuracy and realized trading/hedging performance can dominate model architecture.
+Springer
++1
+
+Summary: the 20 ML methods
+
+Legend:
+🟢 = particularly suitable
+🟡 = suitable with conditions
+🔴 = generally not my first choice
+
+Rank ML method Why it is good Intraday Daily Medium term Long term Best role in options
+1 XGBoost Excellent nonlinear interactions, fast, strong on tabular option/market data, relatively robust 🟢 🟢 🟢 🟡 IV/RV prediction, trade selection, mispricing
+2 LSTM / Bi-LSTM Learns temporal dependencies and volatility persistence 🟢 🟢 🟢 🟡 IV, RV, option-price forecasting
+3 LightGBM Very fast gradient boosting; excellent for huge option datasets 🟢 🟢 🟢 🟡 IV surface, cross-sectional prediction
+4 Transformer / Autoformer Captures long-range dependencies and many simultaneous features 🟢 🟢 🟢 🟢 Multivariate forecasting
+5 Random Forest Robust nonlinear baseline; less sensitive to tuning 🟢 🟢 🟢 🟡 Classification, pricing, regime detection
+6 Temporal Fusion Transformer Designed for multi-horizon forecasting + heterogeneous features 🟡 🟢 🟢 🟢 Multi-horizon IV/RV/returns
+7 GRU LSTM-like sequence learning with fewer parameters 🟢 🟢 🟢 🟡 Hedging, IV/RV
+8 MLP / Feed-forward NN Strong nonlinear function approximator; relatively simple 🟢 🟢 🟢 🟢 Cross-sectional prediction/pricing
+9 Graph Neural Network (GNN) Models relationships between contracts across strike/maturity/option type 🟡 🟢 🟢 🟢 Entire option-chain/surface modeling
+10 CNN / 2D-CNN Excellent for treating IV surfaces as structured 2D objects 🟢 🟢 🟢 🟡 IV surface/smile/skew
+11 PPO / Deep RL Learns sequential trading/hedging decisions rather than only prediction 🟢 🟢 🟢 🟡 Position sizing, hedging, execution
+12 DDPG / TD3 Designed for continuous actions such as hedge ratios 🟢 🟢 🟢 🟡 Dynamic hedging
+13 Neural SDE Models the stochastic process itself; useful for pricing/scenario generation 🔴 🟡 🟢 🟢 Pricing, simulation, hedging
+14 VAE Learns latent market/return distributions and dimensionality reduction 🟡 🟢 🟢 🟢 IV surface, distribution modeling
+15 Gaussian Process / DKL Excellent uncertainty estimates; useful with smaller datasets 🔴 🟢 🟢 🟢 Pricing + uncertainty
+16 N-BEATS Strong dedicated time-series architecture 🟡 🟢 🟢 🟢 Volatility/return forecasting
+17 Elastic Net Simple, regularized, interpretable and excellent benchmark 🟢 🟢 🟢 🟢 Feature selection/baseline
+18 SVR Strong nonlinear model for small/medium datasets 🟡 🟢 🟢 🟡 Pricing/IV prediction
+19 CatBoost Strong gradient boosting with categorical/mixed features 🟢 🟢 🟢 🟡 Cross-sectional options prediction
+20 Ensemble / Stacking Combines different model weaknesses; often most attractive for production 🟢 🟢 🟢 🟢 Final prediction/trade-ranking layer
+1. XGBoost — best overall starting point
+
+Best horizons: Intraday → daily → medium term
+
+If I were beginning the actual research project, XGBoost would be my first model.
+
+Why?
+
+Options data is naturally tabular:
+
+IV
+IV rank
+IV percentile
+realized volatility
+VIX
+VIX term structure
+skew
+delta
+gamma
+theta
+vega
+DTE
+moneyness
+volume
+open interest
+bid/ask
+underlying momentum
+liquidity.
+
+XGBoost is exceptionally good at discovering nonlinear interactions between these variables.
+
+For example:
+
+IV-RV spread
+×
+VIX regime
+×
+DTE
+×
+skew
+IV-RV spread×VIX regime×DTE×skew
+
+can be much more informative than any one variable.
+
+An option-pricing study comparing NN, SVR, Random Forest, XGBoost and LightGBM found that the ML methods substantially outperformed traditional Black-Scholes/Corrado-Su approaches in its WTI option sample, with additive boosting methods performing best.
+ScienceDirect
+
+My preferred applications
+
+Intraday: trade/no-trade classification, short-term IV changes
+Daily: IV/RV prediction, expected P&L
+Medium: volatility regime and relative-value selection
+Long: less attractive because tree models don't naturally model very long temporal dependencies.
+
+Verdict: ⭐⭐⭐⭐⭐
+
+2. LSTM / Bi-LSTM
+
+Best horizons: Intraday → daily → medium
+
+LSTM is particularly appropriate for options because volatility is highly persistent.
+
+The recent 2026 equity-option study is particularly interesting: it compares LSTM specifications on standardized IV and finds that universal models trained across underlyings perform especially well. The optimized universal LSTM generated economically meaningful delta-hedged results, and the authors conclude that data richness was more important than model depth.
+Springer
++1
+
+That is a very important result.
+
+Best uses
+IV forecasting
+realized-volatility forecasting
+short-term option-price forecasting
+dynamic hedging.
+Horizon
+
+Intraday: excellent if you have high-frequency sequences.
+
+Daily: excellent.
+
+Medium term: very good.
+
+Long term: less attractive unless you're using long sequences and sufficient data.
+
+Verdict: ⭐⭐⭐⭐⭐
+
+3. LightGBM
+
+Best horizons: Intraday → daily → medium
+
+Think of LightGBM as a highly scalable alternative to XGBoost.
+
+It becomes especially attractive when the dataset contains:
+
+millions or hundreds of millions of option observations.
+
+That can easily happen with:
+
+thousands of underlyings,
+thousands of strikes,
+many expirations,
+calls and puts,
+intraday observations.
+
+It has already been studied directly alongside XGBoost and Random Forest for option pricing.
+ScienceDirect
+
+Best uses
+IV forecasting
+cross-sectional option ranking
+option fair value
+probability-of-profit
+large-scale screening.
+
+Verdict: ⭐⭐⭐⭐⭐
+
+4. Transformer / Autoformer
+
+Best horizons: Daily → medium → long
+
+This becomes increasingly attractive when you have a lot of information.
+
+For example:
+
+Plain text
+Price
+Options
+VIX
+Rates
+Macro
+News
+Earnings
+Sector
+Market breadth
+Liquidity
+
+Transformers can process relationships across long sequences and multiple features.
+
+A recent 2026 option-pricing paper uses a Transformer-LSTM hybrid on 711,089 real-market option contracts, combining global contextual representation from the Transformer with local temporal modeling from LSTM.
+ScienceDirect
+
+Best use
+
+I'd particularly investigate Transformer models for:
+
+1-day IV
+5-day IV
+20-day IV
+30-day RV
+multi-horizon return distributions.
+
+Intraday: 🟢 possible, but computational requirements rise.
+
+Daily: 🟢 excellent.
+
+Medium: 🟢 excellent.
+
+Long: 🟢 potentially excellent.
+
+Verdict: ⭐⭐⭐⭐⭐
+
+5. Random Forest
+
+Best horizons: Intraday → daily → medium
+
+Random Forest is one of the models I would always keep as a benchmark.
+
+Why?
+
+Because it is difficult to completely destroy.
+
+It handles:
+
+nonlinear relationships,
+interactions,
+noisy features,
+mixed distributions.
+
+It is also useful for discovering whether your fancy neural network is actually adding value.
+
+Best use
+
+I'd use RF for:
+
+classification,
+regime detection,
+trade filtering,
+option pricing,
+feature importance.
+
+It is less attractive for very long sequential forecasting.
+
+Verdict: ⭐⭐⭐⭐½
+
+6. Temporal Fusion Transformer
+
+Best horizons: Daily → medium → long
+
+TFT is particularly interesting when you want multiple prediction horizons simultaneously.
+
+For example:
+
+𝐼
+𝑉
+1
+𝑑
+IV
+1d
+​
+
+𝐼
+𝑉
+5
+𝑑
+IV
+5d
+​
+
+𝐼
+𝑉
+20
+𝑑
+IV
+20d
+​
+
+𝐼
+𝑉
+60
+𝑑
+IV
+60d
+​
+
+at the same time.
+
+This is particularly useful for an options strategy because you can ask:
+
+Is IV expected to rise tomorrow but fall over the next month?
+
+That information could influence:
+
+calendar spreads,
+diagonals,
+straddles,
+strangles.
+
+Verdict: ⭐⭐⭐⭐⭐ for a sophisticated research system.
+
+7. GRU
+
+Best horizons: Intraday → daily → medium
+
+GRU is a simpler alternative to LSTM.
+
+It is particularly interesting for dynamic hedging.
+
+A Journal of Banking & Finance study developed a GRU-based option-hedging model using S&P 500 European option data and found that its weekly and monthly hedging performance significantly surpassed several competing methods, with daily performance also outperforming multiple benchmarks.
+ScienceDirect
+
+So I'd classify GRU as:
+
+especially strong for sequential option hedging.
+
+Verdict: ⭐⭐⭐⭐½
+
+8. MLP
+
+Best horizons: All horizons, depending on features
+
+MLP is underrated.
+
+It doesn't naturally understand time like LSTM, but if you give it engineered features such as:
+
+1-day return
+5-day return
+20-day return
+5-day RV
+20-day RV
+IV percentile
+VIX
+skew
+term structure
+
+it can become a very strong model.
+
+Major advantage
+
+Very easy to train.
+
+Major advantage #2
+
+Very useful benchmark.
+
+If:
+
+Transformer Sharpe = 0.91
+
+and:
+
+MLP Sharpe = 0.90
+
+I'd probably choose the MLP.
+
+Verdict: ⭐⭐⭐⭐½
+
+9. GNN
+
+Best horizons: Daily → medium → long
+
+This is one of the models I'm most interested in for your eventual framework.
+
+Why?
+
+Because an option chain is naturally a graph.
+
+For example:
+
+Plain text
+SPY 500 Call
+│
+┌────────┼────────┐
+↓ ↓ ↓
+490 Call 500 Call 510 Call
+│ │ │
+└────┬───┴───┬────┘
+↓ ↓
+30D 60D
+
+The contracts aren't independent.
+
+GNNs can explicitly model these relationships.
+
+Best use
+volatility surface
+relative-value
+cross-strike relationships
+cross-maturity relationships
+option-chain prediction.
+
+Verdict: ⭐⭐⭐⭐½ now; potentially ⭐⭐⭐⭐⭐ in a mature system.
+
+10. CNN
+
+Best horizons: Intraday → daily → medium
+
+Represent:
+
+𝐼
+𝑉
+(
+𝐾
+,
+𝑇
+)
+IV(K,T)
+
+as a matrix:
+
+7D 30D 60D 90D
+90% moneyness
+95%
+100%
+105%
+110%
+
+Now the volatility surface looks like a structured image.
+
+CNN can learn:
+
+smile,
+skew,
+curvature,
+term structure.
+
+This makes CNN much more interesting for options than for ordinary stock prediction.
+
+Verdict: ⭐⭐⭐⭐
+
+11. PPO / Deep Reinforcement Learning
+
+Best horizons: Intraday → daily → medium
+
+This is fundamentally different from XGBoost.
+
+XGBoost asks:
+
+What happens next?
+
+PPO asks:
+
+What should I do?
+
+That makes PPO particularly attractive for:
+
+dynamic hedging,
+position sizing,
+trade timing,
+execution.
+
+Recent research directly studying option hedging under transaction costs emphasizes that risk-sensitive RL can outperform static model-fit objectives, particularly when evaluated through realized hedging outcomes and shortfall rather than IV RMSE alone.
+ScienceDirect
++1
+
+A broader review of 17 DRL option-hedging studies finds DDPG particularly common because of its suitability for continuous actions, and reports that transaction-cost-aware agents often outperform Black-Scholes delta hedging in frictional environments—while also noting the lack of standardized benchmarks.
+MDPI
+
+Important caution
+
+I would not make PPO the first model.
+
+First establish:
+
+predictive edge,
+realistic P&L,
+risk model.
+
+Then introduce RL.
+
+Verdict: ⭐⭐⭐⭐½
+
+12. DDPG / TD3
+
+Best horizons: Intraday → daily → medium
+
+These models are particularly suited to continuous actions.
+
+For example:
+
+𝐻
+𝑒
+𝑑
+𝑔
+𝑒
+𝑅
+𝑎
+𝑡
+𝑖
+𝑜
+=
+−
+0.72
+HedgeRatio=−0.72
+
+instead of:
+
+Plain text
+BUY
+SELL
+HOLD
+
+That's exactly what you want for dynamic delta/vega hedging.
+
+Verdict: ⭐⭐⭐⭐
+
+13. Neural SDE
+
+Best horizons: Medium → long
+
+This is more of an institutional quant/research model.
+
+Instead of predicting:
+
+𝑆
+𝑡
++
+1
+S
+t+1
+​
+
+it tries to learn the underlying stochastic dynamics.
+
+That makes it useful for:
+
+scenario generation,
+option pricing,
+risk,
+hedging,
+Monte Carlo.
+
+I wouldn't use it as the first model for an intraday strategy.
+
+Verdict: ⭐⭐⭐⭐
+
+14. VAE
+
+Best horizons: Daily → medium → long
+
+VAE is particularly useful for:
+
+Dimensionality reduction
+
+Turn:
+
+Plain text
+1,000 option-surface variables
+
+into:
+
+Plain text
+10 latent volatility factors
+
+It can also model distributions rather than just point predictions.
+
+This makes it useful before:
+
+XGBoost,
+LightGBM,
+Transformer,
+Monte Carlo.
+
+Verdict: ⭐⭐⭐⭐
+
+15. Gaussian Process / Deep Kernel Learning
+
+Best horizons: Daily → medium → long
+
+Its biggest advantage isn't necessarily prediction accuracy.
+
+It's:
+
+uncertainty estimation.
+
+Instead of saying:
+
+𝐼
+𝑉
+=
+24.5
+%
+IV=24.5%
+
+you can estimate:
+
+𝐼
+𝑉
+=
+24.5
+%
+±
+𝑢
+𝑛
+𝑐
+𝑒
+𝑟
+𝑡
+𝑎
+𝑖
+𝑛
+𝑡
+𝑦
+.
+IV=24.5%±uncertainty.
+
+That's extremely valuable for deciding:
+
+Is this trade sufficiently attractive to take?
+
+The disadvantage is computational scalability.
+
+Therefore:
+
+Intraday: generally poor.
+
+Daily: good.
+
+Medium/long: good.
+
+Verdict: ⭐⭐⭐⭐
+
+16. N-BEATS
+
+Best horizons: Daily → medium → long
+
+Excellent time-series architecture.
+
+I would use it primarily for:
+
+RV,
+IV,
+returns,
+volatility regimes.
+
+But I currently rank it below:
+
+LSTM,
+Transformer,
+XGBoost
+
+for an options-specific project because the direct option evidence is less compelling.
+
+Verdict: ⭐⭐⭐½
+
+17. Elastic Net
+
+Best horizons: ALL
+
+This is your control group.
+
+It should never disappear from the research.
+
+Suppose:
+
+Model Net Sharpe
+Elastic Net 0.72
+XGBoost 0.81
+LSTM 0.79
+Transformer 0.80
+
+Then the complex model isn't necessarily worth its additional complexity.
+
+Elastic Net is especially useful for:
+
+feature selection,
+baseline,
+interpretability,
+low-data environments.
+
+Verdict: ⭐⭐⭐½ as a standalone model, but ⭐⭐⭐⭐⭐ as a benchmark.
+
+18. SVR
+
+Best horizons: Daily → medium
+
+SVR is useful when:
+
+dataset isn't enormous,
+relationship is nonlinear,
+you want something between linear regression and neural networks.
+
+It has also been directly evaluated in option-pricing research alongside XGBoost, LightGBM, Random Forest and neural networks.
+ScienceDirect
+
+But it doesn't scale as nicely as boosting methods.
+
+Verdict: ⭐⭐⭐½
+
+19. CatBoost
+
+Best horizons: Intraday → daily → medium
+
+Very useful when you have categorical variables.
+
+For example:
+
+Plain text
+Underlying = SPY
+Sector = ETF
+OptionType = Call
+ExpiryBucket = 30-45D
+Regime = HighVol
+
+CatBoost can handle such structures naturally.
+
+I would test it against XGBoost and LightGBM.
+
+Verdict: ⭐⭐⭐½–⭐⭐⭐⭐
+
+20. Ensemble / stacking
+
+Best horizons: ALL
+
+This is actually my favorite production architecture.
+
+Instead of asking:
+
+Which model wins?
+
+ask:
+
+Which combination produces the most stable edge?
+
+For example:
+
+𝑃
+𝑟
+𝑒
+𝑑
+𝑖
+𝑐
+𝑡
+𝑖
+𝑜
+𝑛
+=
+0.30
+𝑋
+𝐺
+𝐵
+𝑜
+𝑜
+𝑠
+𝑡
++
+0.25
+𝐿
+𝑆
+𝑇
+𝑀
++
+0.20
+𝑇
+𝑟
+𝑎
+𝑛
+𝑠
+𝑓
+𝑜
+𝑟
+𝑚
+𝑒
+𝑟
++
+0.15
+𝐺
+𝑁
+𝑁
++
+0.10
+𝐸
+𝑙
+𝑎
+𝑠
+𝑡
+𝑖
+𝑐
+𝑁
+𝑒
+𝑡
+Prediction=0.30XGBoost+0.25LSTM+0.20Transformer+0.15GNN+0.10ElasticNet
+
+But ideally the weights are themselves optimized using out-of-sample data.
+
+Horizon ranking
+
+Now, if your objective is specifically to decide which ML models we should use at each trading horizon, I'd summarize it this way.
+
+⚡ Intraday options
+Best
+XGBoost
+LightGBM
+LSTM
+GRU
+Random Forest
+MLP
+CNN
+PPO
+DDPG/TD3
+CatBoost
+Why?
+
+Intraday trading heavily penalizes:
+
+latency,
+turnover,
+bid/ask spreads,
+model complexity.
+
+So fast models become very valuable.
+
+A Transformer might theoretically predict better but still lose money because it generates too much turnover.
+
+📅 Daily options
+
+This is where I think the largest opportunity exists.
+
+Best
+XGBoost
+LSTM
+LightGBM
+Transformer
+GRU
+TFT
+GNN
+Random Forest
+MLP
+Ensemble.
+
+Why?
+
+You get enough observations for ML while avoiding some of the extreme microstructure problems of high-frequency trading.
+
+📆 Medium-term: roughly 1–12 weeks
+
+This is where I would strongly favor:
+
+LSTM
+Transformer
+TFT
+XGBoost
+GNN
+VAE
+GRU
+MLP
+N-BEATS
+Ensemble.
+
+Here the model has more time to exploit:
+
+volatility regimes,
+IV/RV relationships,
+macro conditions,
+trend,
+earnings,
+term structure.
+🗓️ Long-term: 3–12+ months
+
+Here I would shift away from high-frequency sequence models.
+
+Best candidates
+Transformer
+TFT
+MLP
+Elastic Net
+GNN
+VAE
+Neural SDE
+Gaussian Process
+N-BEATS
+Ensemble.
+
+But there's an important caveat:
+
+Long-dated option trading has relatively few independent observations.
+
+So a giant deep-learning model can actually be worse than a simpler model.
+
+My preferred model × horizon matrix
+Model Intraday Daily 1–12 weeks 3–12+ months
+XGBoost ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐
+LSTM ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐
+LightGBM ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐
+Transformer ⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+Random Forest ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐ ⭐⭐⭐
+TFT ⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+GRU ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐
+MLP ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐½ ⭐⭐⭐⭐
+GNN ⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+CNN ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐ ⭐⭐⭐
+PPO ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐ ⭐⭐⭐
+DDPG/TD3 ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐ ⭐⭐⭐
+Neural SDE ⭐⭐ ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+VAE ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+Gaussian Process ⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐½
+N-BEATS ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐
+Elastic Net ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐
+SVR ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐
+CatBoost ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐
+Ensemble ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+One important correction to the original ranking
+
+After looking specifically at horizon suitability, I would not interpret the original Top 20 ranking as:
+
+#1 XGBoost = always better than #2 LSTM.
+
+Instead:
+
+XGBoost wins the general-purpose category.
+LSTM wins much of the sequential volatility category.
+Transformers win the large, multi-source, long-context category.
+GNN wins the option-chain structure category.
+RL wins the decision/hedging category.
+Elastic Net wins the simple benchmark category.
+
+That's a much more useful interpretation.
+
+The most interesting combination for our next research framework
+
+I would now narrow the eventual experiment to six model families, rather than blindly running all 20 equally.
+
+Core models
+
+XGBoost
+
+→ tabular nonlinear prediction
+
+LSTM
+
+→ temporal volatility
+
+Transformer/TFT
+
+→ long-context/multivariate forecasting
+
+GNN
+
+→ option-chain relationships
+
+PPO/Deep Hedging
+
+→ dynamic decision/hedging
+
+Elastic Net
+
+→ statistical benchmark
+
+Then the remaining 14 models become secondary benchmarks/ablation tests.
+
+This saves enormous computational effort while still giving us a scientifically meaningful comparison.
+
+One particularly important point for your eventual framework
+
+I would separate prediction models from decision models.
+
+Prediction layer
+𝑋
+𝑡
+→
+{
+𝐸
+[
+𝐼
+𝑉
+𝑡
++
+ℎ
+]
+
+𝐸
+[
+𝑅
+𝑉
+𝑡
++
+ℎ
+]
+
+𝐸
+[
+𝑅
+𝑡
++
+ℎ
+]
+
+𝑃
+(
+𝑅
+>
+0
+)
+
+𝑃
+(
+𝑃
+𝑁
+𝐿
+>
+0
+)
+X
+t
+​
+
+→
+⎩
+⎨
+⎧
+​
+
+E[IV
+t+h
+​
+
+]
+E[RV
+t+h
+​
+
+]
+E[R
+t+h
+​
+
+]
+P(R>0)
+P(PNL>0)
+​
+
+Use:
+
+XGBoost + LSTM + Transformer + GNN
+
+Decision layer
+
+Then:
+
+Predictions
++
+Current IV
++
+DTE
++
+Delta
++
+VIX
++
+Liquidity
++
+Costs
+Predictions+Current IV+DTE+Delta+VIX+Liquidity+Costs
+
+→
+
+trade / don't trade
+
+→
+
+position size
+
+→
+
+hedge
+
+Use:
+
+PPO / risk optimizer / rules-based optimizer.
+
+This is substantially more robust than asking one neural network to do everything.
+
+Recent RL option research reinforces this distinction: static implied-volatility fit can diverge from actual hedging performance, especially under transaction costs and stressed regimes.
+ScienceDirect
+
+And one more major point: transaction costs change the ranking
+
+A model may look great before costs but terrible afterward.
+
+For example:
+
+𝐺
+𝑟
+𝑜
+𝑠
+𝑠
+
+𝑆
+ℎ
+𝑎
+𝑟
+𝑝
+𝑒
+=
+1.8
+Gross Sharpe=1.8
+
+could become:
+
+𝑁
+𝑒
+𝑡
+
+𝑆
+ℎ
+𝑎
+𝑟
+𝑝
+𝑒
+=
+0.6
+Net Sharpe=0.6
+
+after:
+
+bid/ask,
+commissions,
+slippage,
+market impact.
+
+Recent deep-hedging research explicitly incorporates transaction costs and trains directly against CVaR, while recent RL research evaluates cost/turnover and shortfall rather than relying only on static pricing metrics.
+SSRN
++1
+
+Therefore, in our eventual framework I would make:
+
+Net P&L after realistic costs
+Net P&L after realistic costs
+​
+
+the ultimate objective—not RMSE.
+
+Bottom line
+
+If we are going to build the Top-20 strategies × Top-20 ML models framework next, my preferred hierarchy is:
+
+Intraday → XGBoost / LightGBM / LSTM / GRU / RL
+
+Daily → XGBoost / LSTM / LightGBM / Transformer / GNN
+
+Medium-term → LSTM / Transformer / TFT / GNN / XGBoost
+
+Long-term → Transformer / TFT / GNN / VAE / Neural-SDE / simpler regularized models
+
+And for the overall research system:
+
+XGBoost
++
+LSTM
++
+Transformer
++
+GNN
++
+RL
++
+Elastic Net benchmark
+XGBoost+LSTM+Transformer+GNN+RL+Elastic Net benchmark
+​
+
+is the combination I'd prioritize.
+
+The 2026 evidence is especially encouraging for pooled/universal LSTM models, while the newest research is increasingly moving toward hybrid Transformer-LSTM models and graph representations, and toward cost/risk-aware RL rather than optimizing option-pricing accuracy alone.
+Springer
++2
+
+You said:
+do more deep research and give me 3 best framework for option trading, consider reasons and rational , and main and final goals; consider top bank and financial institution frameworks as #4 and #5; also include to that table what's major goals like maximize profit or minimize risks, also why think its best combination and framework
+ChatGPT said:
+
+Yes. I went deeper and, importantly, I would not recommend a single “best ML model + best option strategy.” The stronger conclusion from the academic evidence and the public descriptions of institutional practice is that the best architecture is a layered framework: forecast the market, estimate the option’s relative value, choose a strategy, size the position, control Greeks/tail risk, and execute only when the expected edge survives realistic costs.
+
+Also, for #4 and #5, I am using publicly documented institutional frameworks/archetypes, not claiming access to proprietary bank trading systems.
+
+Executive conclusion
+
+If the objective is:
+
+maximize long-run risk-adjusted profitability while controlling drawdowns, tail risk, turnover and model failure
+
+my ranking would be:
+
+Rank Framework Core philosophy Main goal Risk goal Profit goal My overall rating
+🥇 1 Adaptive ML Volatility + Relative-Value + Risk-Control Framework Predict IV/RV and option returns, identify mispricing, dynamically select strategies Risk-adjusted alpha Control CVaR, DD, Greeks Maximize net P&L/Sharpe ⭐⭐⭐⭐⭐
+🥈 2 ML Multi-Strategy Regime-Switching Framework Different strategies/models activated according to market regime Consistency across regimes Minimize regime-specific losses Maximize stable compound return ⭐⭐⭐⭐⭐
+🥉 3 ML + Deep Hedging / RL Framework ML predicts opportunities; RL dynamically manages positions/hedges Optimal dynamic P&L Minimize downside/shortfall Maximize net risk-adjusted return ⭐⭐⭐⭐⭐
+4 Institutional Volatility-Risk-Premium / Risk-Target Framework Systematically harvest VRP with volatility targeting and diversification Stable risk-adjusted income Control volatility/tail exposure Harvest VRP efficiently ⭐⭐⭐⭐½
+5 Institutional Option-Overlay / Outcome Framework Options modify portfolio risk/return rather than purely speculate Portfolio outcome optimization Downside protection / volatility reduction Income + controlled upside ⭐⭐⭐⭐½
+
+The first three are the frameworks I would actually develop for the research project. #4 and #5 are important institutional benchmarks because they reflect how sophisticated asset managers publicly describe systematic option investing: risk premia, volatility targeting, overlays, downside protection, income, liquidity and portfolio-level risk management.
+
+1. 🥇 Adaptive ML Volatility + Relative-Value Framework
+My #1 choice
+
+This is the framework I would choose if the primary objective is maximizing trading profitability while remaining scientifically defensible.
+
+Architecture
+Plain text
+MARKET DATA
+│
+┌────────────────┼────────────────┐
+↓ ↓ ↓
+Underlying Options Macro
+prices chain factors
+│ │ │
+└────────────────┼────────────────┘
+↓
+FEATURE ENGINEERING
+│
+┌────────────────┼────────────────┐
+↓ ↓ ↓
+IV/RV Regime Microstructure
+factors factors factors
+│ │ │
+└────────────────┼────────────────┘
+↓
+ML PREDICTION
+┌──────────┬──────────┬──────────┐
+↓ ↓ ↓ ↓
+XGBoost LSTM Transformer GNN
+│ │ │ │
+└──────────┴──────────┴────────────┘
+↓
+ENSEMBLE / META MODEL
+↓
+EXPECTED OPTION RETURN
+EXPECTED IV CHANGE
+EXPECTED RV
+P(Profit > 0)
+↓
+STRATEGY SELECTOR
+↓
+┌──────────┬──────────┬─────────────┐
+↓ ↓ ↓ ↓
+spreads straddles calendars VRP
+│ │ │ │
+└──────────┴──────────┴─────────────┘
+↓
+RISK OPTIMIZATION
+↓
+CVaR / Greeks / DD / exposure
+↓
+POSITION SIZING
+↓
+COST-AWARE EXECUTION
+↓
+PORTFOLIO
+Why I rank this #1
+
+The strongest academic evidence supports the basic idea.
+
+A major Review of Financial Studies study uses more than 12 million observations from 1996–2020 and finds that nonlinear ML materially improves out-of-sample option-return prediction. Importantly, the resulting long-short portfolios remained economically and statistically profitable after transaction costs. Option characteristics—especially information from the implied-volatility surface and nonlinear jump/volatility measures—were particularly important.
+DOI
++1
+
+That is exactly the type of problem this framework attacks.
+
+It doesn't ask:
+
+“Will SPY go up?”
+
+Instead:
+
+“Which option is relatively mispriced given the expected future distribution of returns and volatility?”
+
+That is a much better question.
+
+Main prediction targets
+
+I would have the ML layer predict multiple targets, not just price:
+
+Target 1 — IV change
+Δ
+𝐼
+𝑉
+𝑡
++
+ℎ
+ΔIV
+t+h
+​
+
+Target 2 — realized volatility
+𝑅
+𝑉
+𝑡
+,
+𝑡
++
+ℎ
+RV
+t,t+h
+​
+
+Target 3 — IV/RV spread
+𝐼
+𝑉
+𝑡
+−
+𝐸
+[
+𝑅
+𝑉
+𝑡
+,
+𝑡
++
+ℎ
+]
+IV
+t
+​
+
+−E[RV
+t,t+h
+​
+
+]
+Target 4 — expected option return
+𝐸
+[
+𝑅
+𝑡
++
+ℎ
+𝑜
+𝑝
+𝑡
+𝑖
+𝑜
+𝑛
+]
+E[R
+t+h
+option
+​
+
+]
+Target 5 — probability of profit
+𝑃
+(
+𝑃
+𝑁
+𝐿
+>
+0
+)
+P(PNL>0)
+Target 6 — expected tail loss
+𝐶
+𝑉
+𝑎
+𝑅
+𝛼
+CVaR
+α
+​
+
+This allows the system to distinguish:
+
+high expected return + terrible tail risk
+
+from:
+
+moderate expected return + excellent risk-adjusted opportunity.
+
+Why the ML combination is powerful
+
+I wouldn't use one model.
+
+I'd use specialized models:
+
+Model Responsibility
+XGBoost Nonlinear tabular relationships
+LSTM Time-series / volatility persistence
+Transformer Long-range multi-factor relationships
+GNN/CNN Option surface / chain structure
+Elastic Net Simple benchmark
+Meta-model Combine forecasts
+
+This is supported by different strands of the literature.
+
+Recent work finds LSTM useful for option-price/IV dynamics, including evidence that LSTM can outperform Black-Scholes, Heston and MLP benchmarks in certain settings.
+Springer
+
+A 2026 study of standardized IV forecasting also finds economically meaningful trading results from universal LSTM models, while showing that transaction costs can substantially reduce the apparent advantage.
+Springer
++1
+
+A newer study applies CNNs directly to the volatility surface and finds that the resulting out-of-sample option-return signals survive transaction-cost adjustments, with stronger predictability under intermediary constraints.
+SSRN
+
+So the models aren't redundant:
+
+XGBoost
++
+LSTM
++
+Transformer
++
+Surface Model
+XGBoost+LSTM+Transformer+Surface Model
+​
+
+capture different information.
+
+Main goal of Framework #1
+Primary
+Maximize NET risk-adjusted return
+Maximize NET risk-adjusted return
+​
+
+Not maximum gross return.
+
+Specifically:
+
+max
+⁡
+[
+𝑆
+ℎ
+𝑎
+𝑟
+𝑝
+𝑒
++
+𝜆
+1
+𝑆
+𝑜
+𝑟
+𝑡
+𝑖
+𝑛
+𝑜
+−
+𝜆
+2
+𝐶
+𝑉
+𝑎
+𝑅
+−
+𝜆
+3
+𝑀
+𝑎
+𝑥
+𝐷
+𝐷
+−
+𝜆
+4
+𝑇
+𝑢
+𝑟
+𝑛
+𝑜
+𝑣
+𝑒
+𝑟
+]
+max[Sharpe+λ
+1
+​
+
+Sortino−λ
+2
+​
+
+CVaR−λ
+3
+​
+
+MaxDD−λ
+4
+​
+
+Turnover]
+
+subject to:
+
+∣
+Δ
+∣
+<
+𝐿
+𝑖
+𝑚
+𝑖
+𝑡
+∣Δ∣<Limit
+∣
+Γ
+∣
+<
+𝐿
+𝑖
+𝑚
+𝑖
+𝑡
+∣Γ∣<Limit
+∣
+Vega
+∣
+<
+𝐿
+𝑖
+𝑚
+𝑖
+𝑡
+∣Vega∣<Limit
+∣
+position
+∣
+<
+𝐿
+𝑖
+𝑚
+𝑖
+𝑡
+∣position∣<Limit
+
+and sufficient liquidity.
+
+Why this is important
+
+A strategy with:
+
+Sharpe = 2.0
+
+but:
+
+Max Drawdown = −55%
+
+may be considerably less useful than:
+
+Sharpe = 1.4
+
+and:
+
+Max Drawdown = −15%.
+
+2. 🥈 ML Multi-Strategy Regime-Switching Framework
+
+This is my second choice and potentially the most robust framework.
+
+Instead of trying to find one strategy that works everywhere:
+
+detect the market regime and select the appropriate strategy.
+
+Architecture
+Plain text
+Market
+│
+↓
+Regime Detection
+│
+├── Low IV / Low RV
+├── High IV / Falling RV
+├── High IV / Rising RV
+├── Bull trend
+├── Bear trend
+├── Crisis
+├── Event/Earnings
+└── Liquidity stress
+│
+↓
+Strategy Selector
+│
+┌────────┼─────────┐
+↓ ↓ ↓
+VRP Long Vol Directional
+↓ ↓ ↓
+Put Straddle Spread
+Spread Strangle Call/Put
+↓ ↓ ↓
+Calendar Protective structures
+│
+↓
+Risk Allocator
+│
+↓
+Portfolio
+Why this may be superior to Framework #1
+
+Options strategies have state-dependent payoff distributions.
+
+For example:
+
+Short volatility
+
+Can be attractive when:
+
+𝐼
+𝑉
+≫
+𝐸
+𝑥
+𝑝
+𝑒
+𝑐
+𝑡
+𝑒
+𝑑
+𝑅
+𝑉
+IV≫ExpectedRV
+
+but dangerous when:
+
+𝑅
+𝑉
+↑
+↑
+RV↑↑
+Long volatility
+
+Can be attractive when:
+
+𝐸
+𝑥
+𝑝
+𝑒
+𝑐
+𝑡
+𝑒
+𝑑
+𝑅
+𝑉
+≫
+𝐼
+𝑉
+ExpectedRV≫IV
+
+but long options can lose through:
+
+theta,
+IV contraction,
+timing error.
+
+AQR's research makes this point very clearly: buying options simply because you expect realized volatility to increase is insufficient. In their study, one-month S&P 500 option buying was consistently profitable only in the highest decile of volatility changes and lost money across much of the lower range.
+AQR
+
+Therefore:
+
+Prediction alone is not enough.
+Prediction alone is not enough.
+​
+
+The system needs conditional strategy selection.
+
+Example regime table
+Regime Expected condition Preferred strategy
+Low IV + stable RV IV fairly low Long-vol structures selectively
+High IV + stable RV IV expensive Short-vol / spreads
+High IV + rising RV Crisis risk Reduce short-vol
+Low IV + rising RV Potential vol expansion Long straddle/strangle
+Bull + high IV Positive trend + expensive vol Call spreads / covered structures
+Bear + high IV Downside + expensive protection Put spreads / defined-risk
+Earnings Jump risk Event-specific structures
+Extreme VIX Tail regime Defined-risk / avoid naked short vol
+Illiquid High implementation cost No trade
+
+The IMF's 2026 Global Financial Stability Report is particularly relevant here: it describes options markets as effectively involving volatility buyers, volatility sellers and dealers, and highlights how dealer gamma positioning can amplify or dampen market moves. It also notes the enormous growth of short-dated/0DTE trading and the possibility of rapid gamma-regime changes.
+IMF eLibrary
+
+That strongly supports regime-aware risk management rather than static strategy selection.
+
+Main goal of Framework #2
+Primary goal
+Maximize consistency across market regimes
+Maximize consistency across market regimes
+​
+
+rather than simply maximize average return.
+
+Secondary objectives
+reduce drawdowns
+reduce tail losses
+reduce regime dependence
+improve Sharpe/Sortino
+prevent catastrophic short-volatility losses.
+
+This is why I rank it extremely highly.
+
+3. 🥉 ML + Deep Hedging / Reinforcement Learning
+
+This is the most sophisticated of the three.
+
+But I would not use RL as the primary alpha engine.
+
+I would use it as the decision and risk-management engine.
+
+Architecture
+Plain text
+ML ALPHA MODELS
+│
+┌────────────┼────────────┐
+↓ ↓ ↓
+IV RV Return
+forecast forecast forecast
+│ │ │
+└────────────┼────────────┘
+↓
+RL ENVIRONMENT
+│
+State = market + portfolio
+│
+┌─────────┴─────────┐
+↓ ↓
+PPO/TD3 Deep Hedge
+│ │
+└─────────┬─────────┘
+↓
+ACTION
+↓
+position / hedge / exit
+↓
+COST + SLIPPAGE
+↓
+REWARD
+↓
+RL
+Why this is different
+
+Traditional ML:
+
+𝑋
+→
+𝑌
+X→Y
+
+RL:
+
+𝑆
+𝑡
+𝑎
+𝑡
+𝑒
+𝑡
+→
+𝐴
+𝑐
+𝑡
+𝑖
+𝑜
+𝑛
+𝑡
+→
+𝑅
+𝑒
+𝑤
+𝑎
+𝑟
+𝑑
+𝑡
+→
+𝑆
+𝑡
+𝑎
+𝑡
+𝑒
+𝑡
++
+1
+State
+t
+​
+
+→Action
+t
+​
+
+→Reward
+t
+​
+
+→State
+t+1
+​
+
+This matters enormously for options.
+
+Suppose the model predicts a good trade.
+
+You still have to decide:
+
+how large?
+when enter?
+when exit?
+hedge delta?
+hedge gamma?
+hedge vega?
+roll?
+tolerate drawdown?
+close before earnings?
+reduce exposure when liquidity deteriorates?
+
+RL can optimize sequences of decisions, rather than individual predictions.
+
+Recent research specifically shows that static IV-fitting performance and actual hedging performance can diverge once transaction costs and risk preferences are incorporated. A 2026 paper develops risk-averse, cost-aware RL approaches and evaluates them under both crash and calm regimes.
+ScienceDirect
+
+The CFA Institute's 2025 Research Foundation work similarly describes modern deep learning in finance as moving toward pricing, risk, signal generation and reinforcement-learning hedging with transaction costs and frictions included in the objective.
+CFA Institute Research & Policy Center
+
+Main goal
+Maximize cumulative risk-adjusted P&L
+Maximize cumulative risk-adjusted P&L
+​
+
+while minimizing:
+
+transaction costs
+turnover
+CVaR
+drawdown
+hedging error
+shortfall.
+Reward function
+
+I'd use something closer to:
+
+𝑅
+𝑒
+𝑤
+𝑎
+𝑟
+𝑑
+𝑡
+=
+𝑃
+𝑁
+𝐿
+𝑡
+−
+𝐶
+𝑜
+𝑠
+𝑡
+𝑡
+−
+𝜆
+𝐶
+𝑉
+𝑎
+𝑅
+𝑡
+−
+𝛾
+𝐷
+𝑟
+𝑎
+𝑤
+𝑑
+𝑜
+𝑤
+𝑛
+𝑡
+−
+𝜂
+𝑇
+𝑢
+𝑟
+𝑛
+𝑜
+𝑣
+𝑒
+𝑟
+𝑡
+Reward
+t
+​
+
+=PNL
+t
+​
+
+−Cost
+t
+​
+
+−λCVaR
+t
+​
+
+−γDrawdown
+t
+​
+
+−ηTurnover
+t
+​
+
+rather than:
+
+𝑅
+𝑒
+𝑤
+𝑎
+𝑟
+𝑑
+=
+𝑃
+𝑁
+𝐿
+.
+Reward=PNL.
+
+That distinction is extremely important.
+
+Framework #4 — Institutional VRP / Risk-Premia Framework
+
+This is where we start moving toward the institutional model.
+
+I would not describe this as “the Goldman Sachs framework” or “the JPMorgan framework”—proprietary bank strategies aren't publicly available.
+
+Instead, this is the publicly observable institutional risk-premia archetype.
+
+AQR is an especially useful public reference.
+
+AQR documents the volatility risk premium (VRP) as compensation earned for providing volatility protection, and discusses systematic option-selling strategies as a way of harvesting that premium.
+AQR
+
+Parametric, now part of Morgan Stanley Investment Management, publicly describes an Absolute Return Volatility Risk Premia strategy that sells index options and collateralizes the exposure with Treasuries, with explicit acknowledgment of potentially significant losses during sharp underlying moves.
+Morgan Stanley
+
+Man Group's public risk-premia framework emphasizes a multi-factor, multi-strategy, multi-asset approach designed to generate returns across varied market conditions.
+Man
+
+Institutional architecture
+Plain text
+Volatility Surface
+│
+↓
+VRP Estimate
+│
+IV - Expected RV
+│
+↓
+Position Signal
+│
+Volatility Target
+│
+↓
+Risk Allocation
+│
+┌────────┼────────┐
+↓ ↓ ↓
+Calls Puts Spreads
+│ │ │
+└────────┼────────┘
+↓
+Portfolio
+│
+Risk Controls
+↓
+Tail Hedge
+Primary goal
+Harvest volatility risk premium
+Harvest volatility risk premium
+​
+
+Secondary goal
+Maintain stable portfolio risk
+Maintain stable portfolio risk
+​
+
+not:
+
+maximize raw option-selling return.
+
+That's a crucial difference.
+
+Why this institutional framework matters
+
+AQR explicitly warns that although VRP has historically produced strong risk-adjusted returns, sharp market swings can generate meaningful drawdowns, so position sizing must reflect tail risk.
+AQR
+
+That's exactly why I'd incorporate this framework as a baseline institutional benchmark.
+
+Framework #5 — Institutional Option-Overlay / Outcome Framework
+
+This is closer to the way major asset managers publicly use options for portfolios.
+
+BlackRock describes options as tools to:
+
+reduce risk,
+shift returns toward income,
+transform portfolio exposures,
+target specific investment outcomes.
+BlackRock
++1
+
+Its public option-overlay framework explicitly includes:
+
+concentrated-stock hedging,
+downside protection,
+income generation,
+volatility adjustment,
+
+using structures such as covered calls, protective puts and collars.
+BlackRock
+
+Morgan Stanley's Global Balanced Income strategy is another useful institutional example: it combines global allocation with put-option selling for income and explicitly uses a volatility-targeting process to maintain a stable risk profile.
+Morgan Stanley
++1
+
+Institutional architecture
+Plain text
+Core Portfolio
+│
+↓
+Risk Analysis
+│
+┌───────┼────────┐
+↓ ↓ ↓
+Market Volatility Concentration
+risk risk risk
+│ │ │
+└───────┼────────┘
+↓
+Option Overlay
+│
+┌────────┼─────────┐
+↓ ↓ ↓
+Protective Covered Collar
+Put Call
+│ │ │
+└────────┼─────────┘
+↓
+Target Portfolio
+↓
+Risk / Income / Outcome
+Main goal
+
+Not necessarily:
+
+max
+⁡
+𝑃
+𝑟
+𝑜
+𝑓
+𝑖
+𝑡
+maxProfit
+
+but:
+
+Optimize portfolio outcome
+Optimize portfolio outcome
+​
+
+Examples:
+
+reduce maximum drawdown,
+reduce volatility,
+generate income,
+preserve upside,
+protect a concentrated position.
+The five frameworks side by side
+#1 Adaptive ML #2 Regime ML #3 ML + RL #4 Institutional VRP #5 Institutional Overlay
+Primary objective Alpha Consistency Dynamic optimization VRP Portfolio outcome
+Profit maximization ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐
+Risk minimization ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+Sharpe optimization ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐
+Sortino ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+Max DD control ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+CVaR control ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+Intraday ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐ ⭐⭐
+Daily ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐
+Medium-term ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐
+Long-term ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+ML dependence Very high Very high Very high Moderate Low–moderate
+Complexity High Very high Very high Moderate Moderate
+Interpretability Medium Medium Low High High
+Transaction-cost sensitivity High High Very high Medium Medium
+Tail-risk protection High Very high Very high Medium Very high
+Institutional resemblance Medium High High Very high Very high
+Research potential Excellent Excellent Excellent High High
+What should the final objective actually be?
+
+This is where I would make a major change to the original project.
+
+I would not define success as “maximum profit.”
+
+That encourages the model to discover extremely risky strategies.
+
+Instead, define a hierarchical objective.
+
+Level 1 — Survival
+
+The system must first satisfy:
+
+𝑃
+(
+ruin
+)
+≈
+0
+P(ruin)≈0
+
+and:
+
+𝐶
+𝑉
+𝑎
+𝑅
+95
+/
+99
+<
+𝐿
+𝑖
+𝑚
+𝑖
+𝑡
+CVaR
+95/99
+​
+
+<Limit
+
+and:
+
+𝑀
+𝑎
+𝑥
+𝐷
+𝐷
+<
+𝐿
+𝑖
+𝑚
+𝑖
+𝑡
+.
+MaxDD<Limit.
+Level 2 — Risk-adjusted return
+
+Then optimize:
+
+𝑆
+ℎ
+𝑎
+𝑟
+𝑝
+𝑒
+Sharpe
+
+and:
+
+𝑆
+𝑜
+𝑟
+𝑡
+𝑖
+𝑛
+𝑜
+.
+Sortino.
+Level 3 — Absolute profitability
+
+Then:
+
+𝑁
+𝑒
+𝑡
+
+𝐶
+𝐴
+𝐺
+𝑅
+Net CAGR
+
+or:
+
+𝑁
+𝑒
+𝑡
+
+𝑃
+𝑁
+𝐿
+.
+Net PNL.
+Level 4 — Efficiency
+
+Finally:
+
+𝑅
+𝑒
+𝑡
+𝑢
+𝑟
+𝑛
+/
+𝑇
+𝑢
+𝑟
+𝑛
+𝑜
+𝑣
+𝑒
+𝑟
+Return/Turnover
+𝑅
+𝑒
+𝑡
+𝑢
+𝑟
+𝑛
+/
+𝑀
+𝑎
+𝑟
+𝑔
+𝑖
+𝑛
+Return/Margin
+𝑅
+𝑒
+𝑡
+𝑢
+𝑟
+𝑛
+/
+𝑇
+𝑎
+𝑖
+𝑙
+𝑅
+𝑖
+𝑠
+𝑘
+Return/TailRisk
+
+This creates a much more robust hierarchy:
+
+Survive
+→
+Control Risk
+→
+Maximize Risk-Adjusted Return
+→
+Maximize Profit
+Survive→Control Risk→Maximize Risk-Adjusted Return→Maximize Profit
+​
+
+The most important design decision: don't optimize RMSE
+
+This deserves special emphasis.
+
+Suppose:
+
+Model A
+
+IV RMSE:
+
+3.2
+%
+3.2%
+
+Sharpe:
+
+0.4
+0.4
+Model B
+
+IV RMSE:
+
+3.8
+%
+3.8%
+
+Sharpe:
+
+1.7
+1.7
+
+Model B is clearly more valuable for trading.
+
+The recent literature demonstrates exactly this disconnect: traditional models can sometimes have respectable forecasting errors while producing weaker trading results, whereas ML models can uncover information that translates better into option-return strategies.
+DOI
+
+Therefore:
+
+𝑃
+𝑟
+𝑒
+𝑑
+𝑖
+𝑐
+𝑡
+𝑖
+𝑜
+𝑛
+
+𝑎
+𝑐
+𝑐
+𝑢
+𝑟
+𝑎
+𝑐
+𝑦
+≠
+𝑇
+𝑟
+𝑎
+𝑑
+𝑖
+𝑛
+𝑔
+
+𝑝
+𝑟
+𝑜
+𝑓
+𝑖
+𝑡
+𝑎
+𝑏
+𝑖
+𝑙
+𝑖
+𝑡
+𝑦
+Prediction accuracy
+
+=Trading profitability
+​
+
+The final framework I recommend
+
+After combining the five approaches, I wouldn't actually choose only one.
+
+I would create a six-layer institutional-style ML options system.
+
+🏆 Proposed final architecture
+Plain text
+┌──────────────────────┐
+│ DATA LAYER │
+│──────────────────────│
+│ Options │
+│ Underlying │
+│ IV surface │
+│ VIX/VIX term structure│
+│ RV │
+│ Rates │
+│ Macro │
+│ Liquidity │
+│ Volume/OI │
+│ Events/Earnings │
+└──────────┬───────────┘
+↓
+┌──────────────────────┐
+│ FEATURE / STATE LAYER│
+│──────────────────────│
+│ IV-RV spread │
+│ IV percentile │
+│ Skew │
+│ Term structure │
+│ Greeks │
+│ DTE │
+│ Delta │
+│ Gamma │
+│ Liquidity │
+│ Regime │
+└──────────┬───────────┘
+↓
+┌──────────────────────────────────┐
+│ ML PREDICTION │
+│──────────────────────────────────│
+│ XGBoost │
+│ LSTM │
+│ Transformer / TFT │
+│ CNN / GNN │
+│ Elastic Net benchmark │
+└────────────────┬─────────────────┘
+↓
+┌────────────────────────────────────┐
+│ MULTI-TARGET FORECAST │
+│────────────────────────────────────│
+│ Expected IV │
+│ Expected RV │
+│ IV-RV │
+│ Expected option return │
+│ P(Profit > 0) │
+│ Tail-loss estimate │
+└─────────────────┬──────────────────┘
+↓
+┌──────────────────────┐
+│ REGIME ENGINE │
+│──────────────────────│
+│ Bull / Bear │
+│ Low / High vol │
+│ Crisis │
+│ Event │
+│ Liquidity stress │
+└──────────┬───────────┘
+↓
+┌──────────────────────┐
+│ STRATEGY SELECTOR │
+│──────────────────────│
+│ Spreads │
+│ Straddles │
+│ Strangles │
+│ Calendars │
+│ Vertical spreads │
+│ VRP │
+│ Protective structures │
+└──────────┬───────────┘
+↓
+┌──────────────────────┐
+│ RL / OPTIMIZER │
+│──────────────────────│
+│ Entry │
+│ Exit │
+│ Position size │
+│ Delta hedge │
+│ Vega hedge │
+│ Roll │
+└──────────┬───────────┘
+↓
+┌──────────────────────┐
+│ RISK ENGINE │
+│──────────────────────│
+│ Greeks │
+│ VaR │
+│ CVaR │
+│ Max DD │
+│ Stress tests │
+│ Scenario analysis │
+│ Concentration │
+└──────────┬───────────┘
+↓
+┌──────────────────────┐
+│ COST / EXECUTION │
+│──────────────────────│
+│ Bid/ask │
+│ Slippage │
+│ Market impact │
+│ Commission │
+│ Liquidity │
+│ Turnover │
+└──────────┬───────────┘
+↓
+┌──────────────────────┐
+│ WALK-FORWARD TEST │
+│──────────────────────│
+│ Train │
+│ Validation │
+│ Test │
+│ Purged/embargoed │
+│ Multiple regimes │
+└──────────┬───────────┘
+↓
+FINAL P&L
+Why I think this is the best combination
+
+Because it separates five fundamentally different problems.
+
+1. Prediction
+
+What is likely to happen?
+
+ML.
+
+2. Relative valuation
+
+Which option is expensive/cheap relative to expectations?
+
+IV/RV + surface model.
+
+3. Strategy selection
+
+What is the best way to express the forecast?
+
+Strategy engine.
+
+4. Position management
+
+How much should I trade and when should I hedge?
+
+RL/optimizer.
+
+5. Survival
+
+What happens if I'm wrong?
+
+Risk engine.
+
+That separation is extremely important.
+
+And it mirrors what sophisticated institutions emphasize
+
+The public institutional material is remarkably consistent on this point.
+
+BIS
+
+Banks' market-risk framework emphasizes expected shortfall, liquidity horizons and stress-aware market-risk measurement rather than simply maximizing expected return.
+Bank for International Settlements
++1
+
+IMF
+
+Institutional derivatives risk management emphasizes comprehensive risk measurement, daily marking-to-market and consolidated exposure management.
+IMF eLibrary
++1
+
+AQR
+
+Systematic option strategies focus on harvesting risk premia while explicitly recognizing tail losses and drawdowns.
+AQR
++1
+
+BlackRock
+
+Option overlays are explicitly framed around risk reduction, income and transforming portfolio exposures, rather than simply maximizing option P&L.
+BlackRock
++1
+
+Morgan Stanley
+
+Its public option/risk-premia strategies combine option selling with volatility targeting and portfolio-level risk control.
+Morgan Stanley
++1
+
+CFA / modern quant practice
+
+Execution, transaction-cost analysis, liquidity and ML-based execution are treated as part of the trading process, not as an afterthought.
+CFA Institute
++1
+
+One factor I would rank extremely high: transaction costs
+
+This is probably the biggest danger in the entire project.
+
+The latest ML option research provides a warning.
+
+A 2026 study reports strong raw option-trading results from LSTM-based IV forecasts, but finds that bid/ask costs materially erode those profits, with delta-hedged performance turning negative under sufficiently large effective-spread assumptions.
+DOI
+
+Another recent end-to-end deep-learning options study finds that explicitly incorporating turnover regularization improves performance under high transaction costs.
+arXiv
+
+So the actual signal should be:
+
+𝐸
+𝑥
+𝑝
+𝑒
+𝑐
+𝑡
+𝑒
+𝑑
+
+𝐸
+𝑑
+𝑔
+𝑒
+>
+𝐵
+𝑖
+𝑑
+𝐴
+𝑠
+𝑘
++
+𝑆
+𝑙
+𝑖
+𝑝
+𝑝
+𝑎
+𝑔
+𝑒
++
+𝐶
+𝑜
+𝑚
+𝑚
+𝑖
+𝑠
+𝑠
+𝑖
+𝑜
+𝑛
++
+𝑀
+𝑎
+𝑟
+𝑘
+𝑒
+𝑡
+𝐼
+𝑚
+𝑝
+𝑎
+𝑐
+𝑡
+Expected Edge>BidAsk+Slippage+Commission+MarketImpact
+​
+
+If not:
+
+NO TRADE
+NO TRADE
+​
+
+That single rule can make the difference between an interesting academic model and an actual trading system.
+
+Final ranking by objective
+Objective #1 Framework #2 #3
+Maximum profit potential Adaptive ML ML + RL Regime ML
+Maximum Sharpe Adaptive ML Regime ML ML + RL
+Maximum Sortino Regime ML ML + RL Adaptive ML
+Minimum drawdown Regime ML ML + RL Institutional Overlay
+Minimum CVaR ML + RL Regime ML Institutional Overlay
+Intraday Adaptive ML Regime ML ML + RL
+Daily Adaptive ML Regime ML ML + RL
+Medium term Adaptive ML Regime ML ML + RL
+Long term Regime ML Institutional VRP Institutional Overlay
+Best institutional benchmark Institutional VRP Institutional Overlay —
+Best research framework Adaptive ML Regime ML ML + RL
+Best overall architecture Hybrid of #1+#2+#3
+My final recommendation
+
+If this were my research project, I would not select Framework #1 instead of #2 and #3.
+
+I would construct:
+
+Framework
+
+1
++
+Framework
+
+2
++
+Framework
+
+3
+Framework 1+Framework 2+Framework 3
+​
+
+with #4 and #5 serving as institutional benchmarks.
+
+The resulting system would have:
+
+Alpha
+
+XGBoost + LSTM + Transformer + GNN/CNN
+
+Regime
+
+VIX + IV/RV + term structure + skew + market state
+
+Strategy
+
+Top 20 option strategies
+
+Decision
+
+RL / constrained optimizer
+
+Risk
+
+Greeks + VaR + CVaR + stress testing + max drawdown
+
+Execution
+
+bid/ask + slippage + market impact + commissions
+
+Validation
+
+walk-forward + purged/embargoed testing + multiple market regimes
+
+Ultimate objective
+max
+⁡
+[
+𝑁
+𝑒
+𝑡
+
+𝑅
+𝑒
+𝑡
+𝑢
+𝑟
+𝑛
+𝐷
+𝑜
+𝑤
+𝑛
+𝑠
+𝑖
+𝑑
+𝑒
+
+𝑅
+𝑖
+𝑠
+𝑘
+]
+max[
+Downside Risk
+Net Return
+​
+
+]
+​
+
+subject to:
+
+𝐶
+𝑉
+𝑎
+𝑅
+,
+
+𝑀
+𝑎
+𝑥
+𝐷
+𝐷
+,
+
+𝐺
+𝑟
+𝑒
+𝑒
+𝑘
+𝑠
+,
+
+𝑇
+𝑢
+𝑟
+𝑛
+𝑜
+𝑣
+𝑒
+𝑟
+,
+
+𝐿
+𝑖
+𝑞
+𝑢
+𝑖
+𝑑
+𝑖
+𝑡
+𝑦
+≤
+𝑝
+𝑟
+𝑒
+𝑑
+𝑒
+𝑓
+𝑖
+𝑛
+𝑒
+𝑑
+
+𝑙
+𝑖
+𝑚
+𝑖
+𝑡
+𝑠
+CVaR, MaxDD, Greeks, Turnover, Liquidity≤predefined limits
+​
+
+In other words, the final goal should not be “find the model that predicts options best.”
+
+It should be:
+
+Find the combination of information, ML models, option structures, regime selection, position sizing, hedging and execution that produces the highest sustainable net risk-adjusted return while surviving adverse regimes and realistic market frictions.
+
+That is the framework I believe has the strongest combination of academic evidence + institutional logic + ML capability + practical trading realism. The evidence from the large option-return ML study, recent LSTM research, volatility-surface CNN work, and cost-aware RL research all points in this direction, although none proves that any particular live strategy will remain profitable in the future.
+DOI
++3
+
+Key sources used
+Review of Financial Studies — Option Return Predictability with Machine Learning and Big Data
+Review of Derivatives Research — Predicting Option Prices from Their Price History via Machine Learning
+Springer — Option Pricing with Deep Learning: A Long Short-Term Memory Approach
+AQR — Understanding the Volatility Risk Premium
+AQR — Being Right Is Not Enough: Buying Options to Bet on Higher Realized Volatility
+BlackRock — Demystifying Options
+BlackRock — SpiderRock Options Solutions
+Man Group — Risk Premia
+Morgan Stanley — Global Balanced Income Strategy
+BIS — Internal Models / Expected Shortfall Framework
+IMF — Global Financial Stability Report 2026
+CFA Institute — Deep Learning in Asset Management
+CFA Institute — Trade Strategy and Execution
+CFA Institute — Trading Costs and Electronic Markets
+NBER — Volatility Disagreement in the Options Market
+NBER — Common Risk Factors in the Returns on Stocks, Bonds and Options
+Deep Learning for Options Trading: An End-to-End Approach
+Deep Hedging with Reinforcement Learning: A Practical Framework for Option Risk Management
+Deep Learning Option Pricing with Market Implied Volatility Surfaces
+You said:
+Executive conclusion If the objective is: maximize long-run risk-adjusted profitability while controlling drawdowns, tail risk, turnover and model failure my ranking would be:
+add to that table another column for suitability to intraday/daily/medium term/and long term option trading
+ChatGPT said:
+
+Yes. I’d add the horizon suitability directly to the five-framework comparison. One refinement from the latest research: daily and medium-term are the strongest fit for the ML-heavy frameworks, while intraday requires much stricter controls for latency, turnover, spread and slippage. Recent work also shows that model fit can diverge materially from actual after-cost hedging/trading performance.
+ScienceDirect
++1
+
+Updated comparison: 5 best frameworks
+
+Legend: ⭐⭐⭐⭐⭐ = excellent fit, ⭐⭐⭐⭐ = very good, ⭐⭐⭐ = workable, ⭐⭐ = limited, ⭐ = poor fit.
+
+Rank Framework Core philosophy Main / final goal Profit maximization Risk minimization Intraday Daily Medium term Long term Why I think it's a strong combination
+🥇 1 Adaptive ML Volatility + Relative-Value + Risk Control ML predicts IV/RV/returns → identify mispricing → select option strategy → risk-adjusted sizing Maximize net risk-adjusted alpha ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ Best combination of nonlinear ML, volatility forecasting, option-surface information and explicit risk controls
+🥈 2 ML Multi-Strategy Regime-Switching Detect volatility/market regime → activate the strategy most appropriate to that regime Maximize consistency across regimes ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ Avoids the major weakness of a single strategy: behaving badly when the market regime changes
+🥉 3 ML + Deep Hedging / Reinforcement Learning ML predicts opportunity → RL decides entry, size, hedge, exit and rebalancing Optimize dynamic P&L after costs and risk ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐½ Best for sequential decisions, dynamic hedging and incorporating transaction costs directly into decisions
+4 Institutional Volatility-Risk-Premium / Risk-Target Systematically harvest VRP with volatility targeting, diversification and tail controls Stable risk-adjusted VRP harvesting ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ Closest institutional benchmark for systematic volatility-premium harvesting; simpler and more robust than an unconstrained ML system
+5 Institutional Option-Overlay / Portfolio-Outcome Options layered over portfolio to hedge downside, generate income or alter exposure Optimize portfolio-level outcome ⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ Strongest when the goal is portfolio protection/income rather than aggressive standalone option alpha
+Horizon-specific interpretation
+⚡ Intraday option trading
+Ranking
+Rank Framework Suitability
+1 Adaptive ML ⭐⭐⭐⭐½
+2 Regime-Switching ML ⭐⭐⭐⭐½
+3 ML + RL ⭐⭐⭐⭐
+4 Institutional VRP ⭐⭐⭐
+5 Institutional Overlay ⭐⭐
+Why
+
+Intraday is a very different problem.
+
+The theoretical prediction edge has to overcome:
+
+𝐵
+𝑖
+𝑑
+/
+𝑎
+𝑠
+𝑘
++
+𝑠
+𝑙
+𝑖
+𝑝
+𝑝
+𝑎
+𝑔
+𝑒
++
+𝑐
+𝑜
+𝑚
+𝑚
+𝑖
+𝑠
+𝑠
+𝑖
+𝑜
+𝑛
+𝑠
++
+𝑚
+𝑎
+𝑟
+𝑘
+𝑒
+𝑡
+
+𝑖
+𝑚
+𝑝
+𝑎
+𝑐
+𝑡
++
+𝑙
+𝑎
+𝑡
+𝑒
+𝑛
+𝑐
+𝑦
+Bid/ask+slippage+commissions+market impact+latency
+​
+
+Therefore, prediction accuracy alone is insufficient.
+
+The 2026 LSTM options study is an excellent warning: positive raw/delta-hedged results were materially affected once bid-ask costs were incorporated.
+DOI
+
+For intraday, I would therefore emphasize:
+
+XGBoost / LightGBM
+fast LSTM/GRU
+regime classifier
+liquidity model
+short-horizon IV/RV forecasts
+execution model
+strict trade filter.
+
+I would not make a huge Transformer the centerpiece unless the dataset and infrastructure justify it.
+
+📅 Daily option trading
+This is my favorite horizon for Framework #1
+Framework Suitability
+Adaptive ML ⭐⭐⭐⭐⭐
+Regime ML ⭐⭐⭐⭐⭐
+ML + RL ⭐⭐⭐⭐⭐
+Institutional VRP ⭐⭐⭐⭐½
+Institutional Overlay ⭐⭐⭐⭐
+
+Daily data gives you a good compromise:
+
+enough observations for ML
+
+less microstructure noise than intraday
+
+enough time for option mispricing/volatility relationships to develop
+
+manageable computational requirements.
+
+The Federal Reserve's July 2026 research is particularly interesting here: its tree-based heterogeneous IV forecasting framework partitions the option surface by moneyness and maturity, with boosted trees achieving the lowest out-of-sample forecast errors across the tested horizons and a 13% reduction in one-month-ahead RMSE versus its benchmark.
+Federal Reserve
+
+That is very close to the type of model I would put into Framework #1.
+
+📆 Medium-term option trading
+
+For approximately:
+
+1
+week
+→
+3
+months
+1 week→3 months
+
+I would rank:
+
+1. Regime ML
+2. Adaptive ML
+3. ML + RL
+4. Institutional VRP
+5. Institutional Overlay
+
+This horizon is particularly attractive because you can exploit:
+
+IV/RV divergence
+volatility regimes
+term structure
+skew
+macro trends
+earnings/event effects
+mean reversion
+volatility risk premium.
+
+It also gives the strategy more time to overcome transaction costs.
+
+🗓️ Long-term option trading
+
+For:
+
+3
+months
+→
+1
++
+year
+3 months→1+year
+
+I'd change the ranking:
+
+Rank Framework Suitability
+1 Regime ML ⭐⭐⭐⭐⭐
+2 Institutional VRP ⭐⭐⭐⭐⭐
+3 Institutional Overlay ⭐⭐⭐⭐⭐
+4 ML + Deep Hedging ⭐⭐⭐⭐½
+5 Adaptive ML ⭐⭐⭐⭐
+
+Why does #4/#5 become more competitive?
+
+Because at longer horizons, simple structural risk premia and portfolio objectives become more important, while extremely high-frequency predictive signals become less relevant.
+
+For example, an institutional portfolio may care more about:
+
+“Can I systematically earn income while keeping portfolio drawdown below X?”
+
+than:
+
+“Can my neural network predict tomorrow's IV to another decimal place?”
+
+The more useful table for our eventual research
+
+I would actually break the frameworks down into their purpose:
+
+Framework Alpha Volatility Regime Strategy selection Position sizing Hedging Portfolio protection Execution
+#1 Adaptive ML ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐
+#2 Regime ML ⭐⭐⭐⭐½ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐
+#3 ML + RL ⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐
+#4 Institutional VRP ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐
+#5 Institutional Overlay ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐ ⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐⭐ ⭐⭐⭐⭐
+The key conclusion
+
+If we're building the complete research framework, I would not pick only one of the five.
+
+I would combine them:
+
+Layer 1 — Framework #1
+
+ML alpha engine
+
+𝑋
+𝐺
+𝐵
+𝑜
+𝑜
+𝑠
+𝑡
++
+𝐿
+𝑆
+𝑇
+𝑀
++
+𝑇
+𝑟
+𝑎
+𝑛
+𝑠
+𝑓
+𝑜
+𝑟
+𝑚
+𝑒
+𝑟
++
+𝐺
+𝑁
+𝑁
+/
+𝐶
+𝑁
+𝑁
+XGBoost+LSTM+Transformer+GNN/CNN
+
+↓
+
+predict:
+
+𝐼
+𝑉
+,
+
+𝑅
+𝑉
+,
+
+𝐼
+𝑉
+−
+𝑅
+𝑉
+,
+
+𝑅
+𝑒
+𝑡
+𝑢
+𝑟
+𝑛
+,
+
+𝑃
+(
+𝑃
+𝑟
+𝑜
+𝑓
+𝑖
+𝑡
+)
+,
+
+𝐶
+𝑉
+𝑎
+𝑅
+IV, RV, IV−RV, Return, P(Profit), CVaR
+Layer 2 — Framework #2
+
+Regime engine
+
+𝑉
+𝐼
+𝑋
++
+𝐼
+𝑉
+/
+𝑅
+𝑉
++
+𝑠
+𝑘
+𝑒
+𝑤
++
+𝑡
+𝑒
+𝑟
+𝑚
+
+𝑠
+𝑡
+𝑟
+𝑢
+𝑐
+𝑡
+𝑢
+𝑟
+𝑒
++
+𝑚
+𝑎
+𝑟
+𝑘
+𝑒
+𝑡
+
+𝑠
+𝑡
+𝑎
+𝑡
+𝑒
+VIX+IV/RV+skew+term structure+market state
+
+↓
+
+decide which strategies are allowed.
+
+Layer 3 — Framework #3
+
+RL/optimization engine
+
+↓
+
+decide:
+
+entry
+position size
+hedge
+rebalance
+exit.
+
+RL is particularly attractive here because recent research explicitly shows the value of incorporating transaction costs, shortfall probability and risk aversion rather than optimizing static option-pricing accuracy alone.
+ScienceDirect
++1
+
+Layer 4 — Framework #4
+
+Institutional VRP benchmark
+
+↓
+
+ask:
+
+Is the sophisticated ML strategy actually adding value beyond a simple institutional volatility-risk-premium strategy?
+
+Layer 5 — Framework #5
+
+Institutional portfolio-overlay benchmark
+
+↓
+
+ask:
+
+Is our complicated ML system actually better than simply using options to manage portfolio risk/income?
+
+BlackRock's publicly described option-overlay approach, for example, explicitly targets risk-adjusted returns, downside management and income, while its technology analyzes volatility surfaces and prices options in terms of premium per unit of risk.
+BlackRock
+
+Final recommended hierarchy
+
+For the project we've been developing, I'd therefore define the priorities as:
+
+Priority Objective What we optimize
+1 Survival CVaR, stress loss, probability of ruin
+2 Risk control Max drawdown, Greeks, concentration, liquidity
+3 Risk-adjusted profitability Sharpe + Sortino
+4 Net profitability CAGR / total P&L after all costs
+5 Efficiency Return per unit turnover/margin/capital
+6 Prediction quality RMSE/MAE/AUC only as supporting metrics
+
+That ordering is important because recent option-RL research shows that static IV fit can look good while actual hedging/trading outcomes are worse, and that cost-aware, shortfall-aware evaluation can produce different conclusions.
+ScienceDirect
++1
+
+So the ultimate objective of our framework should be:
+
+Maximum
+
+sustainable
+
+NET
+
+risk-adjusted
+
+return
+Maximum sustainable NET risk-adjusted return
+​
+
+subject to:
+
+𝐶
+𝑉
+𝑎
+𝑅
+,
+
+𝑀
+𝑎
+𝑥
+𝐷
+𝐷
+,
+
+𝐺
+𝑟
+𝑒
+𝑒
+𝑘
+𝑠
+,
+
+𝑇
+𝑢
+𝑟
+𝑛
+𝑜
+𝑣
+𝑒
+𝑟
+,
+
+𝐿
+𝑖
+𝑞
+𝑢
+𝑖
+𝑑
+𝑖
+𝑡
+𝑦
+,
+
+𝑀
+𝑎
+𝑟
+𝑔
+𝑖
+𝑛
+≤
+𝑝
+𝑟
+𝑒
+𝑑
+𝑒
+𝑓
+𝑖
+𝑛
+𝑒
+𝑑
+
+𝑙
+𝑖
+𝑚
+𝑖
+𝑡
+𝑠
+CVaR, MaxDD, Greeks, Turnover, Liquidity, Margin≤predefined limits
+​
+
+My preferred horizon
+
+If the eventual objective is actual option trading rather than purely academic forecasting, I would make daily + medium-term trading the primary research target, then build a separate intraday module.
+
+That gives us the best balance between ML learning capability, sufficient data, transaction costs, option liquidity, regime adaptability, and realistic trading implementation. The recent evidence on tree-based IV forecasting, LSTM forecasting and cost-aware RL supports this direction.
+Federal Reserve
++2
+
+Today 8:20 PM
+You said:
+can you give me hand off document include all of our chat , your responses from beginning in one document?
+Worked for 3m 22s
+ChatGPT said:
+
+I created the
+options trading research handoff
+. It includes the frameworks, comparison table, horizon ratings, proposed system, and research decisions visible here.
+
+It is not a complete transcript. The available history starts partway through an earlier response, so I could not include every message from the beginning. Attach a conversation export or paste the missing messages, and I can add the full chronological exchange to this document.
+
+options_research_conversation_handoff.docx
+Word
+ChatGPT can make mistakes. Check important info.
+Latest response
+
+Instant
+
+Tab Context:
+- Executed on tabId: 1562059831
+- Available tabs:
+  • tabId 1562059831: "Project Option trading" ("https://chatgpt.com/share/6ab9de6d-b8d8-83e8-ba15-3bcb3b369f4a")
