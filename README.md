@@ -2,6 +2,8 @@
 
 Private archive of Claude Project 9, "Project 9: AI Option Trading" (created 27 Sep 2026).
 
+Website page: https://hamidf2024.github.io/ai-trading/project-09.html (source: repo `hamidf2024.github.io`, file `ai-trading/project-09.html`).
+
 **Stage:** research and design (charter v1.2, 29 Oct 2026). No data, code or backtests exist yet.
 
 **Goal (owner):** grow total account equity after all costs — target **> 1 % per trading day**,
