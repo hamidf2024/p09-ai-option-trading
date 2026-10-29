@@ -48,7 +48,19 @@ that conversation, not measured results.
 | Best rules-based benchmark in the same study (TSMR) | Sharpe 0.76 (no costs), 0.51 at 50 bps |
 | Cboe PUT index vs S&P 500, 1986–2015 | 10.1% vs 9.8% a year; volatility 10.1% vs 15.3%; Sharpe 0.67 vs 0.47 |
 
+## Reference system reviewed (29 Oct 2026) — not this project's results
+
+Screenshots of a third-party ML options system (`m14.fund3`, see `docs/REFERENCE_SYSTEM_ANALYSIS.md`):
+
+| Item | Displayed value | Caveat |
+|---|---|---|
+| Realized PnL, Aug 17–27 2026 entry cohorts | **+$53,917** (Alpaca +$34,932, Schwab +$18,985; calls +$40,681, puts +$13,236) | Cohort accounting; no account size, unrealized PnL or fees |
+| Largest cohort (26 Aug, calls) | +$45,855 ≈ **85 %** of total | Profit highly concentrated |
+| Earlier snapshot, Aug 17–21 | Realized +$10,055, unrealized −$2,474, net +$7,581; shown 7.7 % vs ≈ 5.8 % by its own formula | Unreconciled; same-date figures changed between snapshots |
+| Model training metric `gain.v/lift` | ≈ 9.7 at 2.1 G steps | Unknown units — **not** a daily return |
+| Claimed > 5 %/day | — | **Not verified** by any screenshot |
+
 ## Next result expected
 
-Roadmap items 9.1–9.5: profit-first selection rule, data vendor, Goyal–Saretto rule benchmark, then
-reproductions of Bali et al. and Tan et al.
+Roadmap stage 10.1 (owner decisions and experiment contract), then 10.2 (data sample) and 10.3
+(baselines on SPY/QQQ). Track B reproductions (Bali et al., Tan et al., Goyal–Saretto) run as benchmarks.

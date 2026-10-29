@@ -1,0 +1,1696 @@
+ UPDATED RESEARCH DOSSIER
+
+
+
+
+ AI Options
+ Trading
+ Evidence, return targets,
+ and a testable system
+
+    Updated evidence: checkpoint and larger PnL sample.
+    Twenty-one screenshots show a named model checkpoint and $53,917 of displayed
+    realized profit. About 85% comes from one opening-date cohort. Daily account returns
+    remain unverified.
+
+
+
+
+ Inside this report
+ - 21-image audit, cohort revisions, and profit concentration
+
+ - Checkpoint, training metrics, and model reconstruction
+
+ - Published research, data, labels, and execution design
+
+ - Risk budgets, rollout gates, and verification requests
+
+
+ Updated October 29, 2026 with both follow-up batches. No model was trained, no backtest was run, and no trade was
+ placed. Proposed experiments and illustrative arithmetic are labeled throughout.
+
+
+
+
+Research assessment | October 29, 2026                                                                               1
+AI OPTIONS TRADING                                                                              EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ 1. Decision and scope
+ An AI options research system is feasible to build. Across all 21 supplied screenshots, there is now stronger
+ evidence of a checkpointed model workflow: a named model artifact, experiment runs, custom metrics, and
+ a dashboard view explicitly labeled live. The larger August table displays $53,917 of realized profit across
+ two broker columns. These are useful new observations, but neither the training curve nor the dollar table
+ establishes daily returns on total account equity. [A8-A17]
+
+ The percentage formula visible in the original and follow-up images uses option entry cost, while each
+ dated row groups positions opened on that date. These are trade-cohort results, potentially accumulated
+ across several holding days. The displayed $53,917 August profit is also concentrated: $45,855,
+ approximately 85.0%, comes from the August 26 opening cohort. Its constituents and holding periods are
+ not shown. [A1, A13, A14, A17]
+
+ The first screenshot still has a separate percentage reconciliation issue. Under its stated formula, five row
+ percentages imply roughly $130,730 of total entry cost. Its realized and unrealized figures imply $7,581 of
+ net profit, or about 5.8% of that cost, while the total percentage reads 7.7%. The newer dollar table largely
+ reconciles, but its cropped percentage and cost fields do not resolve the earlier calculation.
+
+ The productive objective is to discover whether a strategy has positive, repeatable account-level returns
+ after executable trading costs, then estimate the risk and capacity that edge supports. Treat the 1% daily
+ target as a hypothesis to test. The visible concentration makes the recurrence and survivability of large
+ winners particularly important research questions.
+
+ Recommended starting point: liquid ETF options; a small, auditable universe; regularized linear and rule
+ baselines; boosted trees and a small supervised neural model evaluated alongside one another; explicit
+ option-return labels; realistic execution; and a separate risk controller. Compare gain-only prediction with
+ an auxiliary tradability output as a proposed experiment. The screenshots do not establish that the owner
+ uses this exact architecture or loss.
+
+ This revised report separates attachment observations, primary-source findings, explicitly labeled
+ inferences, and proposed experiments. No source code, model weights, historical option dataset, or
+ brokerage statement was supplied. No model was trained, no backtest was run, and no trade was placed in
+ preparing either edition.
+
+
+
+ 2. What the 21 screenshots reveal
+ The first seven images are A1-A7, the ten-image follow-up is A8-A17, and the four additional views are
+ A18-A21. Several images repeat or horizontally reveal the same table or run, so 21 images do not
+ constitute 21 independent performance observations.
+
+
+   Evidence                     Direct observation               What it supports               What remains unknown
+
+
+   A1: wide PnL view            txrdash, m14.fund3, broker and   Cohort accounting and broker   NAV, costs, holding periods,
+                                option-side columns,             attribution                    percentage-total logic
+                                realized/unrealized figures,
+                                entry-cost formula
+
+
+
+
+Research assessment | October 29, 2026                                                                                     2
+AI OPTIONS TRADING                                                                                   EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Evidence                     Direct observation                  What it supports                 What remains unknown
+
+
+   A2, A5, A7                   August opening-date tables with     Different snapshots of cohort    Calendar-day equity
+                                Alpaca subtotals $34,932 and        outcomes                         changes and complete
+                                $11,973                                                              open exposure
+
+
+   A3: Health                   Scanning, features, selection,      A staged operational workflow    How each health condition
+                                routing, exits, authentication,                                      is defined and enforced
+                                and ledger checks
+
+
+   A4: Positions Map            Calls labeled $23,773; several      A portfolio visualization        Exact structures, expiries,
+                                underlying names                                                     sizes, and net Greeks
+
+
+   A6, A15, A16                 Run m14.L.h1b; thresholded lift     A distinct experiment variant    Meaning of the run suffix,
+                                metrics; call/put panels            with side-specific diagnostics   thresholds, units, and split
+
+
+   A8-A11                       Run m14.L.fund3; Crashed            Custom experiment tracking       Architecture, metric
+                                status; gain.v/lift curve           and several metric families      definitions, smoothing,
+                                extending beyond 2G Step;                                            logging-counter semantics
+                                gain.t, gain.v,
+                                tradability.t groups
+
+
+   A12                          Model m14.L.fund3;                  A named checkpoint               Artifact contents, verified
+                                m14_5x200f_553m.pt; step            associated with one              live fills, and meaning of
+                                about 552,710,000; live label; 27   dashboard snapshot               header terms such as pairs
+                                entry days; June/July rows
+
+
+   A13                          Opening-date grouping and           Confirms the earlier             Account-equity return
+                                entry-cost formula repeated         accounting interpretation        denominator
+
+
+   A14, A17                     Expanded August table; total        Larger broker and option-side    Unrealized exposure, total
+                                realized PnL $53,917, including     breakdown                        capital, fees, and individual
+                                $45,855 in August 26 calls                                           trade outcomes
+
+
+   A18-A21                      Complementary views of the          Dates for the original           Why dated Schwab results
+                                earlier table, updated 8/23 at      percentage audit and a           change between
+                                12:42; August 17-21 dates,          comparison of changed cohort     snapshots; underlying
+                                broker totals, and call/put split   values                           trade ledger
+
+
+ The .pt filename is consistent with PyTorch conventions, which allow saved tensors, model states, or other
+ serialized objects. It is a strong implementation clue, not proof of a specific network. The apparent
+ checkpoint step is shown wrapped across two lines in A12; reading it together gives approximately
+ 552,710,000. [25]
+
+ The 553m suffix closely matches that counter rounded to millions. Interpreting it as a training/checkpoint
+ identifier is therefore more plausible than interpreting it as a parameter count, although the naming code
+ remains unavailable. 5x200f could be architecture or feature shorthand; it cannot safely be decoded as five
+ layers of 200 neurons. L, h1b, and the lift thresholds likewise remain undefined.
+
+ The positive and negative percentages in A1 describe volatile cohort outcomes. The clipped Claude
+ reference suggests coding assistance, and the Short PnL sidebar suggests another report; neither identifies
+ the trained model or proves uncovered option selling. The larger, repeated views improve legibility and
+ context without independently authenticating brokerage performance.
+
+
+
+Research assessment | October 29, 2026                                                                                              3
+AI OPTIONS TRADING                                                                      EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ 3. Reconstructing the displayed PnL
+ The first screenshot states, in substance: positions are grouped by opening date; realized profit refers to
+ positions already closed; unrealized profit refers to those still open; percentage gain divides their sum by
+ entry cost. The complementary views in A18-A21 now identify the dates and broker columns for the same
+ earlier snapshot, labeled updated 8/23 at 12:42. The date assignments below combine these views. [A1,
+ A18-A21]
+
+
+   Entry date            Realized        Unrealized   Net PnL          Displayed       Entry cost implied by that
+                                                                       gain            row
+
+
+   2026-08-21            $0              -$2,474      -$2,474          -7.6%           $32,553
+
+
+   2026-08-20            -$3,417         $0           -$3,417          -10.9%          $31,349
+
+
+   2026-08-19            $2,773          $0           $2,773           8.7%            $31,874
+
+
+   2026-08-18            $5,278          $0           $5,278           24.9%           $21,197
+
+
+   2026-08-17            $5,421          $0           $5,421           39.4%           $13,759
+
+
+   Total                 $10,055         -$2,474      $7,581           7.7% shown      Approximately $130,730
+                                                                                       implied
+
+
+ Calculation: implied entry cost equals net row PnL divided by the displayed row return in decimal form.
+ Summing these inferred costs gives $130,730.49. Dividing $7,581 by that amount gives 5.799%, not 7.7%.
+ Allowing each displayed percentage to have rounded to the nearest 0.1 percentage point produces total
+ implied cost of approximately $130,133-$131,335 and a net return of approximately 5.77%-5.83%.
+ Ordinary percentage rounding does not bridge the difference.
+
+ One possible explanation is that the total used realized PnL alone: $10,055 / $130,730 is approximately
+ 7.69%. Another is a different denominator or stale aggregation. These are hypotheses, not findings. The
+ correct request is the exact numerator, denominator, valuation time, and inclusion rules for every total.
+
+ The longer screenshot's displayed Alpaca rows sum to $34,932, matching that subtotal. The earlier table's
+ visible rows sum to $11,973. An opening-date cohort for August 21 appears as $0 in the earlier narrow view
+ and -$5,053 later. That is consistent with cohort values updating after positions close or are revalued; it is
+ not itself a reconstructed calendar-day loss. A2 and A5 appear duplicated and should not count as
+ independent confirmation.
+
+ Even a fully reconciled cohort table cannot answer the central question without total account equity,
+ overnight marks, cash movements, and position timing. Adding cohort percentages, averaging them
+ without weights, or treating eventual profit as profit earned on the opening date would create misleading
+ daily statistics.
+
+
+ Expanded August table and concentration of profit
+ The follow-up images expose the previously cropped broker and option-side columns. Dates obscured by
+ the presenter inset are aligned with the earlier dated view using the matching Alpaca amounts and row
+ order. They should be treated as contextual alignment across screenshots. [A2, A5, A14, A17]
+
+
+
+Research assessment | October 29, 2026                                                                            4
+AI OPTIONS TRADING                                                                             EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Entry date            Alpaca            Schwab             Calls          Puts              Realized
+
+
+   2026-08-28            $0                $0                 $0             $0                $0
+
+
+   2026-08-27            $5,552            -$1,856            -$382          $4,078            $3,696
+
+
+   2026-08-26            $24,070           $21,785            $45,855        $0                $45,855
+
+
+   2026-08-25            -$2,777           -$1,303            -$4,130        $50               -$4,080
+
+
+   2026-08-24            $1,167            $3,698             $6,050         -$1,185           $4,865
+
+
+   2026-08-21            -$5,053           -$1,178            -$2,969        -$3,262           -$6,231
+
+
+   2026-08-20            -$683             -$1,673            $451           -$2,807           -$2,356
+
+
+   2026-08-19            $1,874            -$162              -$3,429        $5,142            $1,712
+
+
+   2026-08-18            $6,697            -$2,360            $4,337         $0                $4,337
+
+
+   2026-08-17            $4,085            $2,033             -$5,102        $11,220           $6,118
+
+
+   Displayed total       $34,932           $18,985            $40,681        $13,236           $53,917
+
+
+ The displayed subtotals reconcile exactly: $34,932 + $18,985 = $53,917, and $40,681 + $13,236 =
+ $53,917. Summed visible Schwab rows give $18,984 and realized rows give $53,916, each $1 below the
+ displayed total. This is consistent with rounding or small display differences. It is materially different from
+ the percentage discrepancy in the older view.
+
+
+   Concentration calculation                         Result
+
+
+   August 26 cohort share of displayed realized      $45,855 / $53,917 = approximately 85.0%
+   profit
+
+
+   Displayed total excluding that cohort             Approximately $8,062
+
+
+   Other call cohorts combined                       $40,681 - $45,855 = -$5,174
+
+
+ This supports a hypothesis that large winners are important to the sample. It does not establish a
+ trade-level payoff distribution, a single winning trade, or profit earned entirely on August 26. Test whether
+ the favorable outcomes recur across independent periods and whether capital survives the intervening
+ losses. The unrealized and percentage fields remain cropped, so $53,917 is displayed realized profit rather
+ than a verified net account return.
+
+ The 27-entry-day label belongs to the June/July view in A12, whereas this table shows August. Do not divide
+ the August profit by 27 to estimate average daily profit. Screenshot capture dates also differ from the
+ trading dates shown inside the images.
+
+
+
+
+Research assessment | October 29, 2026                                                                                  5
+AI OPTIONS TRADING                                                                      EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ Same-date broker figures change between snapshots
+ The four additional images confirm the earlier broker split: Alpaca +$11,973 and Schwab -$1,918, totaling
+ +$10,055 realized. Calls -$3,500 plus puts +$13,555 also total +$10,055. Subtracting the displayed $2,474
+ unrealized loss gives +$7,581 combined PnL. Thus the earlier snapshot is put-led, whereas the later August
+ sample is call-led. This does not by itself identify a market regime or prove that the model deliberately
+ switched strategies. [A18-A21, A14, A17]
+
+ Comparing the same opening dates across the earlier and later views exposes changes in Schwab's
+ reported cohort figures:
+
+
+   Entry date                   Earlier Schwab figure      Later Schwab figure           Change
+
+
+   2026-08-20                   -$2,734                    -$1,673                       +$1,061
+
+
+   2026-08-19                   +$899                      -$162                         -$1,061
+
+
+   2026-08-18                   -$1,419                    -$2,360                       -$941
+
+
+   2026-08-17                   +$1,336                    +$2,033                       +$697
+
+
+ The August 20 improvement and August 19 deterioration offset exactly at $1,061. Possible explanations
+ include trade reallocation between opening-date groups, accounting corrections, or later updates; the
+ screenshots cannot establish which explanation applies. Link every cohort value to stable trade IDs and
+ timestamped ledger events to resolve the difference. A changing opening-date figure must not
+ automatically be interpreted as a new day's trading profit.
+
+ These four views clarify the earlier sample and strengthen the need for reconciliation. They do not add
+ independent trading days, an account-equity denominator, model weights, or new architecture details. The
+ original 7.7% total versus approximately 5.8% under the stated net-PnL formula remains unresolved.
+
+
+
+ 4. Define the 1% objective correctly
+ There are several different possible targets: more than 1% on every trading day; an arithmetic daily
+ average above 1%; a geometric daily growth rate above 1%; or more than 1% on deployed option premium.
+ These are different claims. I interpret the demanding version of your goal as growth of total strategy
+ account equity after trading costs, while explicitly allowing losing days.
+
+ For an account with no external cash movements, daily return is ending net liquidation equity divided by
+ beginning equity, minus one. With cash flows occurring at the measurement boundary, subtract net
+ external inflows from ending equity before dividing by beginning equity. With intraday deposits or
+ withdrawals, value subperiods and link their returns, or use an appropriate cash-flow-weighted
+ approximation. Do not apply a simple end-of-day adjustment indiscriminately to timed intraday flows.
+
+ Net equity includes all cash, positions, stock acquired through exercise, liabilities, financing, and accrued
+ trading costs. Conservative liquidation marks and broker statement marks should both be tracked. Show
+ strategy operating costs separately and also calculate an all-in result including attributable data and
+ infrastructure expense. Taxes depend on the investor and should be shown separately rather than hidden in
+ a generic return claim.
+
+
+
+Research assessment | October 29, 2026                                                                           6
+AI OPTIONS TRADING                                                                               EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Hypothetical result                             Account implication
+
+
+   5% option gain on premium equal to 20% of       Approximately 1% account gain before other costs
+   starting equity, one isolated same-day cohort
+
+
+   5% option gain on premium equal to 5% of        Approximately 0.25% account gain
+   equity
+
+
+   $500 profit on $5,000 premium held for five     10% cohort return; daily account return still unknown
+   days
+
+
+   1% compounded for 21 trading days               23.24% total growth
+
+
+   1% compounded for 252 trading days              12.274 times starting equity; 1,127.4% total gain
+
+
+   5% compounded for 252 trading days              Approximately 218,627 times starting equity
+
+
+ These are mathematical implications, not forecasts. Constant 1% geometric daily growth would turn
+ $100,000 into approximately $1.227 million over 252 trading days before taxes. Scaling, liquidity, costs,
+ and losses make extrapolating short option streaks especially unreliable. The absence of supporting
+ evidence is not a proof that a particular strong day or short interval is impossible.
+
+
+
+ 5. Win rate: secondary, but the payoff distribution matters
+ You are right to prioritize returns over the fraction of winning trades. A high win rate can conceal rare
+ severe losses, and a low win rate can be profitable when winners sufficiently outweigh losers. But win rate
+ is not irrelevant to the distribution of drawdowns, losing streaks, and capital required to survive.
+
+ For equally sized positions measured on the same capital basis, expected trade return is the probability of
+ winning times the average winning return, minus the probability of losing times the average loss
+ magnitude, minus expected costs.
+
+
+   Toy strategy, before costs                      Expected premium return per trade
+
+
+   30% chance of +40%; 70% chance of -10%          +5.0%
+
+
+   90% chance of +2%; 10% chance of -30%           -1.2%
+
+
+ Neither is a forecast. The first example's assumed -10% loss is not guaranteed by placing a stop order. An
+ option can gap through a stop or become difficult to sell. If 20% of account equity funded one such position,
+ the stylized outcomes would be +8% or -2% of equity, with an arithmetic expectation of +1%; an
+ unanticipated full premium loss would instead cost 20% of equity. Sizing from the intended stop alone
+ conceals that exposure.
+
+ Arithmetic and compounded performance also differ. A +50% day followed by a -50% day has a zero
+ arithmetic average but loses 25% of starting capital. Optimize a constrained growth objective, such as
+ expected log wealth, while controlling tail losses and turnover. Log-growth optimization still depends on
+ uncertain forecasts and cannot manufacture an edge.
+
+
+
+
+Research assessment | October 29, 2026                                                                                    7
+AI OPTIONS TRADING                                                                                 EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ Report daily account returns, compounded growth, maximum drawdown, recovery time, expected shortfall,
+ worst losing streak, and profit concentration. Also report the fraction of days exceeding +1%, the fraction of
+ losing days, and win rate as diagnostics. A strategy whose profit comes from one exceptional option should
+ be identified as such. In the expanded screenshot sample, approximately 85% of displayed realized profit
+ comes from one opening-date cohort. Report that dependence separately from individual-trade
+ concentration, which cannot be reconstructed from these images.
+
+
+
+ 6. What published research actually establishes
+ The most useful evidence supports disciplined experimentation rather than a promised daily return.
+
+
+   Primary study                Relevant finding                    Transferable idea              Boundary
+
+
+   Bali, Beckmeyer, Morke,      Nonlinear models improve            Combine option and             A published historical
+   Weigert; Review of           out-of-sample option-return         underlying information;        portfolio study is not this
+   Financial Studies, 2023      prediction using a large            compare models and             owner's live account
+   [2]                          historical panel                    ensembles
+
+
+   Their accessible 2021        Predicts monthly excess             Clear target definition and    Monthly hedged results
+   working-paper version        delta-hedged returns; compares      chronological validation       cannot be relabeled daily
+   [3]                          regularized linear, tree, and                                      premium or account
+                                feed-forward models                                                returns
+
+
+   Tan, Roberts, Zohren;        Studies direct signal learning on   Compare simple and             Uses end-of-day data and
+   2024 preprint [4]            equity-option portfolios and        sequence models; include       approximately one-month
+                                turnover-aware training             costs in optimization          straddles, rather than a
+                                                                                                   demonstrated intraday
+                                                                                                   account system
+
+
+   Buehler, Gonon,              Learns derivative hedges with       Train decisions against        Better hedging is not proof
+   Teichmann, Wood;             frictions and risk constraints      economic losses and            of profitable directional
+   Deep Hedging [5]                                                 constraints                    alpha
+
+
+   Bailey and coauthors;        Strategy selection and repeated     Record all trials and adjust   A single attractive holdout
+   backtest overfitting and     trials inflate apparent             performance assessment         or chart does not remove
+   Deflated Sharpe Ratio        performance                                                        selection bias
+   [7, 8]
+
+
+ The accessible 2021 and final 2023 versions of the Bali paper have different transaction-cost analyses. Do
+ not combine numerical results from different versions. The relevant lesson here is that horizon, hedge
+ accounting, costs, and return denominator must travel with every reported statistic; a portfolio spread is
+ not automatically a fully funded retail account return.
+
+ A recent working-paper abstract by Dorion, Orlowski, and Song reports that a factor-neutral 0DTE strategy
+ becomes infeasible under minimal transaction costs. This is an authors' preprint claim reviewed here at
+ abstract level, not a universal finding that every 0DTE strategy fails. It reinforces the need to test execution
+ costs rather than assume them away. [24]
+
+ I found no publicly retrievable specification, model weights, source repository, or independently verified
+ track record for the exact m14.fund3 system in the screenshots. Exact-name searches and attempts to
+ retrieve the displayed dashboard and apparent experiment project did not expose a reproducible strategy.
+
+
+
+
+Research assessment | October 29, 2026                                                                                           8
+AI OPTIONS TRADING                                                                     EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ 7. Reconstructing the model and deployment workflow
+ The visible modules support the following engineering reconstruction. The exact proprietary
+ implementation remains unavailable.
+
+  1. A scanner builds an eligible market universe.
+
+  2. A feature pipeline produces model inputs.
+
+  3. Training creates versioned checkpoints and logs gain-related metrics.
+
+  4. Selection and ranking turn predictions into candidate trades.
+
+  5. Tradability or eligibility filters and portfolio controls constrain entries.
+
+  6. Broker-specific workers route orders and manage positions.
+
+  7. An independent exit scheduler and reconciliation jobs maintain state.
+
+  8. Dashboards expose health, positions, opening-date outcomes, and checkpoint metadata.
+
+ The model checkpoint in A12 strengthens the connection between training artifacts and the trading
+ dashboard. It does not expose the artifact or prove that every displayed PnL table used the same weights.
+ The deployment name m14.fund3 and training name m14.L.fund3 should be linked through an explicit model
+ registry rather than assumed identical from their spelling.
+
+
+ What the counters and metrics do, and do not, establish
+ The fund3 chart reaches a Step value of 2,119,092,800, while the checkpoint panel names about
+ 552,710,000. These could be different snapshots or counter conventions. The evidence does not establish
+ that the latest plotted weights generated the displayed trades. Preserve the exact checkpoint hash, code
+ version, data cutoff, and activation time for every decision.
+
+ The gain.t, gain.v, and tradability.t groups plausibly distinguish training, validation, and execution-related
+ measurements. That is a naming inference. The letter v does not prove an untouched validation set or
+ chronological evaluation. Separate call and put diagnostics are visible, but separate neural output heads
+ are not.
+
+ The tooltips show 8.50069 (-1.66798) at one location and 9.73016 (13.33021) at another. Their paired-value
+ convention is not defined. W&B permits smoothing and configurable axes; those capabilities make plot
+ settings relevant, but do not establish which transformation produced this graph. Obtain the original logged
+ values and the gain.v/lift function before interpreting a value as a percentage, ratio, or monetary result.
+ [27]
+
+ The curve generally rises during the experiment, with substantial reversals. This establishes an
+ improvement in the displayed custom metric over parts of the logged counter. It does not establish daily
+ account growth, an independent equity curve, or 9.73% daily returns. Threshold names such as 2+ and 4+
+ require their original definitions.
+
+
+
+
+Research assessment | October 29, 2026                                                                            9
+AI OPTIONS TRADING                                                                                     EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ Experiment state and claimed live status
+ One fund3 run is marked Crashed, while h1b is shown Running. W&B's official SDK describes Crashed as a
+ stopped heartbeat from the run's internal process. That status alone does not diagnose financial losses or a
+ brokerage failure. A model-serving process and a training/logging process can have different operational
+ states. [26]
+
+ The June/July dashboard is explicitly labeled live. This revises the first edition's uncertainty about whether
+ any visible view claimed live operation. It is evidence of the application's categorization; authentication
+ requires broker fills, activities, and account statements. The header's pairs terminology and its
+ account/count meaning remain ambiguous. Open legs and open contracts do not, by themselves, identify
+ straddles, pairs trading, or the number of underlying stocks.
+
+ The kooshiar-na workspace is a lead toward original source material, not independent identity or
+ performance verification. The public pages previously reviewed list option pricing and quantitative finance
+ interests but do not supply the missing model specification. The exact h1b run URL newly visible in A15/A16
+ was also attempted and could not be retrieved through the research service. [1]
+
+ For a reproduction, preserve the separation of training, checkpoint activation, model inference, risk,
+ execution, exits, and accounting. The best-supported next technical request is the Overview/Config panel,
+ feature and target definitions, metric code, and the mapping from checkpoint versions to actual orders.
+
+
+
+ 8. Candidate strategies and a sensible research order
+ Daily measurement does not require options that expire daily. A system can measure account returns every
+ day while holding options with several weeks until expiration. The appropriate contract depends on the
+ forecast horizon, volatility exposure, liquidity, and risk budget.
+
+
+   Candidate                    Proposed prediction target          Instruments to investigate         Research priority
+
+
+   Directional selection        Net executable return               Long calls/puts; separately        First: closest to the visible
+                                distribution over a fixed horizon   tested debit spreads               call/put allocation idea
+
+
+   Cross-sectional ranking      Relative future option return       A limited set of liquid stock or   Second: closest to the
+                                after controlling for common        ETF options                        published prediction
+                                exposures                                                              literature
+
+
+   Volatility selection         Realized movement and future        Long straddles or defined-risk     Separate sleeve: requires
+                                IV relative to option cost          spreads                            different labels and risk
+                                                                                                       accounting
+
+
+   Exit optimization            Incremental value of holding        Existing positions only            After a fixed exit rule
+                                versus closing                                                         provides a benchmark
+
+
+   0DTE trading                 Very short-horizon option PnL       Only contracts and broker          Later: sensitive to quote
+                                with detailed execution             facilities explicitly supported    timing, gamma, and
+                                                                                                       liquidation constraints
+
+
+
+
+Research assessment | October 29, 2026                                                                                             10
+AI OPTIONS TRADING                                                                                  EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Candidate                    Proposed prediction target          Instruments to investigate       Research priority
+
+
+   Uncovered short              Return net of jump exposure and     Naked option sales               Exclude from the initial
+   volatility                   collateral cost                                                      design; small premiums
+                                                                                                     can obscure large
+                                                                                                     obligations
+
+
+ FINRA describes rapid-loss and broker-liquidation risks in expiring options. These are essential simulation
+ cases for any 0DTE experiment. [23]
+
+ For a first experiment, use SPY and QQQ option chains rather than a broad changing stock universe. This is
+ an engineering simplification and a hypothesis to test, not a claim of superior returns. SPY and QQQ
+ exposures are correlated and should share a portfolio risk bucket. Expand to individual stocks only after
+ corporate actions, earnings timing, and sector concentration are handled correctly.
+
+ Predeclare a small candidate grid of expiry bands, absolute deltas, and holding horizons. For example, test
+ 5-10, 11-21, and 22-45 calendar DTE with moderate absolute deltas and an intraday-to-next-day horizon.
+ These are experiment settings, not optimized trading recommendations. Count every combination as a
+ research trial and use the same data and cost assumptions across models.
+
+ SPX-style index contracts require separate settlement handling and verified broker support. Cboe
+ distinguishes cash-settled European SPX/XSP contracts from physically settled American SPY options,
+ including different AM/PM settlement conventions. Do not route all contracts through a generic expiry rule.
+ [18]
+
+
+
+ 9. Proposed end-to-end architecture
+ Use a reproducible research pipeline feeding a controlled execution service. The risk controller must be able
+ to reject a model's proposal; no language model should be able to override its limits.
+
+
+   Component                               Main responsibility                            Stored evidence
+
+
+   Raw data store                          Preserve original quotes, trades, reference    Immutable files, checksums,
+                                           data, and release times                        vendor/schema versions
+
+
+   Contract master                         Track exact contract identity, multiplier,     Effective-dated instrument definitions
+                                           deliverable, style, and expiry
+
+
+   Feature builder                         Construct only information available by each   As-of joins, feature version,
+                                           decision time                                  availability checks
+
+
+   Label builder                           Construct executable outcomes over             Entry/exit times, quotes, fees, expiry
+                                           predeclared horizons                           treatment
+
+
+   Model registry                          Compare baselines and challengers              Frozen model, training window,
+                                                                                          parameters, trial history
+
+
+   Portfolio controller                    Convert edge estimates into allowed            Risk budgets, Greeks, correlation
+                                           positions                                      buckets, rejection reasons
+
+
+
+
+Research assessment | October 29, 2026                                                                                          11
+AI OPTIONS TRADING                                                                               EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Component                             Main responsibility                           Stored evidence
+
+
+   Order service                         Submit, track, cancel, and reconcile orders   Client order IDs, acknowledgments,
+                                                                                       fills, latency
+
+
+   Exit service                          Manage exits independently of entry           Due times, actual close state, overdue
+                                         scanning                                      alerts
+
+
+   Ledger                                Reconcile economic positions and account      Cash events, trades, exercises,
+                                         equity                                        assignments, fees
+
+
+   Monitoring                            Detect stale data, drift, outages, and        Alerts, health timestamps, operator
+                                         accounting breaks                             actions
+
+
+ An ordinary CPU is sufficient to start with filtered data and tree models. Use columnar historical files for
+ research and a transactional store for live state. A single reproducible batch job and one execution worker
+ are preferable to unnecessary distributed complexity during validation. This is a proposed implementation
+ choice, not an inference about the screenshots' backend.
+
+ Maintain a checkpoint-to-order audit trail: checkpoint filename and hash, training and data cutoffs,
+ activation time, feature version, and exact trade decisions. A research run progressing beyond a deployed
+ checkpoint must not silently change the model credited with earlier results.
+
+ The dashboard should have separate calendar-day account performance and opening-date cohort
+ performance views. Label the denominator, valuation method, fee treatment, and holding-period basis
+ directly beside each percentage. Preserve the useful operational screens shown in the attachments, but
+ add a mandatory equity and cash-flow reconciliation panel.
+
+
+
+ 10. Data: buy the information the experiment needs
+ Free underlying price bars are insufficient to validate an intraday option strategy. The experiment needs
+ historical option quotes, exact expired contracts, contract changes, underlying prices, and data availability
+ timing. A current option chain cannot reconstruct a historical chain without survivorship bias.
+
+
+   Source, verified from official        Useful capability                             Important boundary
+   documentation
+
+
+   Cboe DataShop Option Quotes [9]       Historical interval NBBO data from January    Snapshots do not establish
+                                         2012; optional IV and Greeks                  intraminute fills or event order
+
+
+   Massive options flat files [10]       OPRA-derived quotes, trades, and              Confirm plan entitlements, coverage,
+                                         aggregates                                    size, and live feed separately
+
+
+   Databento OPRA [11, 12]               Consolidated options data and instrument      Pre-March 28, 2023 data have
+                                         definitions; historical catalog extends to    different granularity and timestamp
+                                         April 2013                                    limitations
+
+
+   OptionMetrics IvyDB US [14]           End-of-day options and related analytics      Appropriate for daily research;
+                                         from January 1996                             end-of-day data alone cannot validate
+                                                                                       intraday execution
+
+
+
+
+Research assessment | October 29, 2026                                                                                       12
+AI OPTIONS TRADING                                                                               EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Source, verified from official        Useful capability                             Important boundary
+   documentation
+
+
+   Alpaca historical options [13]        Historical API data from February 2024        Shorter regime history; its indicative
+                                                                                       feed is not actual OPRA quotes
+
+
+ Two current documentation details materially affect backtesting. Cboe changed its interval quote-size
+ capture convention effective June 22, 2026. Databento says earlier-than-March-28-2023 OPRA data were
+ subsampled, have different schema availability, and do not provide equivalent capture-received
+ timestamps. Test these periods separately before attributing differences to market regimes. [9, 11]
+
+ Run a vendor sample comparison on the same small set of contracts and dates before buying broad history.
+ Include a normal day, a volatile day, an early close, an expiry, and a corporate action if using stocks. Check
+ bid/ask consistency, timestamps, absent contracts, missing intervals, quote sizes, and whether the
+ underlying price is synchronized.
+
+ Do not download the entire options market by default. Data volume can dominate the project. Obtain an
+ explicit quote for the intended universe, resolution, history, index licensing, and non-display use. Provider
+ plan prices alone do not establish the total cost of a reproducible research and execution setup.
+
+
+
+ 11. Features and labels that avoid future information
+ Direction alone is not the target. An option can lose value while its underlying moves the predicted way
+ because the move is too small or late, implied volatility falls, or trading costs exceed the gain. Implied
+ volatility is a pricing input and is not automatically a physical probability forecast.
+
+
+   Feature family                        Candidate inputs                              Main timing hazard
+
+
+   Contract and surface                  DTE, moneyness, delta, gamma, theta,          Using end-of-day or future-smoothed
+                                         vega, skew, term structure                    analytics at an intraday decision
+
+
+   Liquidity                             Bid/ask width, available size, quote age,     Assuming quoted size guarantees a
+                                         recent volume                                 fill or reading future interval volume
+
+
+   Underlying                            Returns, realized volatility, range, trend,   Mixing adjusted historical stock prices
+                                         reversal, volume                              with unadjusted option strikes
+
+
+   Market and regime                     Index movement, volatility state, sector      Using revised or late-published values
+                                         exposure                                      before release
+
+
+   Calendar and events                   Time of day, expiry proximity, earnings       Using the realized event outcome or a
+                                         schedule, known macro events                  retrospectively corrected timestamp
+
+
+   Portfolio state                       Existing Greeks, committed premium,           Training on a state definition different
+                                         concentration                                 from execution
+
+
+ Store event time, known-available time, ingestion time where available, and decision time. Features require
+ availability at or before decision time. Historical events need not include the user's actual ingestion
+ timestamp, but the replay must impose a conservative availability and latency rule rather than invent
+ historical knowledge.
+
+
+
+Research assessment | October 29, 2026                                                                                          13
+AI OPTIONS TRADING                                                                               EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ For a long option with multiplier m, define a unit-contract dollar label as m times the executable exit bid
+ minus executable entry ask, less both sides' fees and modeled slippage. Convert to premium return using
+ actual entry outlay. A neutral target should retain the dollar label as well, because tiny premiums can
+ create extreme and misleading percentage rankings.
+
+ For a two-leg spread, compute the combined executable debit or credit and account for both legs, fills, and
+ fees. A complex-order midpoint is not a guaranteed fill. Incorporate exercise, assignment, contract
+ adjustments, and expiry where the horizon permits them. For a directional strategy, use directional labels;
+ for a delta-hedged strategy, include the stock hedge and its cost in both labels and results.
+
+ Keep a label for each predeclared horizon and train quantiles or other distribution estimates alongside the
+ expected return. A model trained on the best future exit price is learning an unavailable oracle unless a
+ feasible exit policy is separately specified and tested.
+
+
+
+ 12. Which AI models to train, and in what order
+ Different models should compete on the same economic decision, data windows, trading constraints, and
+ cost assumptions. More architectures increase the chance of selecting noise unless the entire search
+ history is retained.
+
+
+   Model family                 Proposed job                       Initial role                  Advancement condition
+
+
+   Regularized linear           Predict net outcomes or            Mandatory baseline            Establish whether complex
+   regression or calibrated     probability of clearing costs                                    interactions add value
+   classifier
+
+
+   Gradient-boosted trees,      Learn nonlinear relationships in   Primary initial model         Stable net performance
+   such as LightGBM             contract, surface, and market                                    beyond the linear and rule
+                                features                                                         baselines
+
+
+   Small feed-forward           Predict economic option            Initial neural candidate      Independent improvement
+   neural network               outcomes                           alongside trees               across chronological
+                                                                                                 windows and seeds
+
+
+   Causal CNN/TCN or            Use a fixed history of market      Sequence challenger           Incremental value beyond
+   LSTM                         and surface state                                                trees using comparable lag
+                                                                                                 features
+
+
+   Temporal Fusion              Multi-horizon conditional          Optional later experiment     Enough data and evidence
+   Transformer or a small       forecasts                                                        to justify complexity;
+   causal transformer                                                                            architecture alone is not an
+                                                                                                 edge [6]
+
+
+   Distribution or quantile     Estimate downside, uncertainty,    Risk and abstention support   Adequate out-of-sample
+   models                       and gain distribution                                            calibration
+
+
+   Reinforcement learning       Constrained exits, execution, or   Later-stage experiment        Beats a fixed policy in a
+                                hedging                                                          realistic simulator and
+                                                                                                 forward evaluation [5]
+
+
+
+
+Research assessment | October 29, 2026                                                                                       14
+AI OPTIONS TRADING                                                                           EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Model family                 Proposed job                      Initial role               Advancement condition
+
+
+   Language model               Extract structured event          Optional auxiliary input   Point-in-time provenance
+                                information or support research                              and measurable
+                                                                                             incremental value
+
+
+ The checkpoint evidence warrants a supervised neural model in the initial comparison alongside boosted
+ trees and mandatory simple baselines. Compare a gain-only network with a network that also predicts
+ tradability, separate call/put outcomes, and downside or uncertainty. These are proposed ablations; the
+ metric names do not prove the owner implemented those heads. Define tradability labels and their future
+ outcome windows explicitly, keeping all predictive inputs available at decision time.
+
+ Train each family with limited, predeclared search budgets, early stopping on validation data, and
+ reproducible seeds. Standardization, winsorization, category maps, and imputation must be fitted only on
+ training data. Treat missingness consistently rather than dropping future-problematic observations after
+ seeing outcomes.
+
+ Ensemble only when the members contribute distinct out-of-sample forecast information or residual risk.
+ Begin with a fixed blend or median forecast. Learn ensemble weights inside the training/validation process,
+ not on the final test period. Ten correlated models are not ten independent sources of protection.
+
+ Do not begin by training a large language model to output buy and sell instructions. Financial text may
+ contain future information relative to the historical trade date, and an otherwise helpful language model
+ still lacks demonstrated executable edge. Restrict its authority to bounded, logged tasks and evaluate
+ those tasks separately.
+
+
+ A concrete first experiment contract
+ To make this actionable, pre-register a deliberately narrow experiment before examining its final test
+ period. One candidate specification is SPY and QQQ, standard unadjusted long calls and puts, 7-21 calendar
+ DTE, absolute delta 0.35-0.60, decisions every 15 minutes after a completed feature interval, and a fixed
+ 60-minute holding policy. Reject entries that cannot complete before a predeclared session cutoff. Use only
+ complete historical sessions available at the research cutoff, not future or partially observed sessions.
+ These settings are a proposed starting experiment, not settings known to be profitable.
+
+ Train on unit-contract net dollar PnL and a corresponding premium-return label; retain both so ranking
+ cannot be dominated by tiny premiums. Use executable post-decision quotes and an explicit latency rule.
+ Initially permit at most one open position per underlying, keep both ETFs in the same correlation bucket,
+ and account for integer contract sizes. Select the eligible contract with the best estimated incremental net
+ contribution only if the abstention rule and risk constraints permit it. Freeze a simple exit policy before
+ comparing learned exits.
+
+ Compare a fixed momentum rule, elastic net, boosted trees, a small two-layer neural network, and one
+ LSTM or causal convolution challenger. Cap each model's tuning budget in advance and record every
+ attempted configuration and seed. For tree models, vary depth/leaves, minimum leaf observations, learning
+ rate, and regularization; for neural models, vary width, dropout, weight decay, and sequence length. Do not
+ expand the search because the holdout disappoints.
+
+ Primary promotion criteria are net calendar-day account performance, drawdown, uncertainty, and stability
+ against executable-cost stress. Prediction error and win rate are secondary diagnostics. Only after this
+
+
+
+Research assessment | October 29, 2026                                                                                  15
+AI OPTIONS TRADING                                                                             EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ contract survives should the experiment expand its universe, tenors, structures, exit flexibility, or live
+ authority.
+
+
+
+ 13. Training and validation protocol
+ Use chronological, nested evaluation. Randomly splitting option rows lets related contracts, repeated
+ observations, and overlapping outcomes leak information across train and test sets. Thousands of options
+ observed on the same day do not constitute thousands of independent market histories.
+
+ An illustrative sequence is to train on 2018-2021, validate on 2022, and test on 2023, then roll the process
+ forward through subsequent years. At each step, learn preprocessing, tune parameters, and choose models
+ only with data that would then have been available. This is a proposed protocol, not an executed result.
+ Reserve the latest suitable contiguous period for one final assessment only if it has genuinely remained
+ untouched during strategy design.
+
+
+   Check                                       Required implementation
+
+
+   Overlapping labels                          Purge training examples whose outcome windows cross a validation or test
+                                               boundary
+
+
+   Temporal separation                         Insert an appropriate gap; use embargo where the chosen cross-validation
+                                               design needs it
+
+
+   Shared market dates                         Keep contemporaneous observations together in temporal evaluation; use
+                                               date-aware uncertainty estimates
+
+
+   Contract lifecycle                          Include expired and delisted instruments; handle adjusted contracts
+                                               explicitly
+
+
+   Data revisions                              Retain or simulate the information version available at the decision date
+
+
+   Hyperparameter selection                    Tune within training/validation windows, then freeze the next test window
+
+
+   Strategy search                             Record unsuccessful trials, alternative filters, exits, and universe choices
+
+
+   External holdout                            Do not repeatedly inspect and retune against it
+
+
+ For uncertainty, resample blocks of calendar-day account returns with all positions kept together, rather
+ than resampling correlated trades independently. Explore sensitivity to block length and regime. Sharpe
+ confidence estimates need attention to serial correlation and non-normality. Use the Deflated Sharpe Ratio
+ and probability-of-overfitting methods as additional diagnostics where their assumptions and available trial
+ records permit them. [7, 8]
+
+ Run ablations: remove option-surface features, underlying features, sequence history, and ensemble
+ members in turn. Compare a no-trade baseline, a simple fixed rule, a linear model, and equal-rule option
+ portfolios under identical execution assumptions. Shift labels or randomize them inside a deliberately
+ controlled diagnostic; a persistent apparent edge is a reason to inspect leakage and search effects, not to
+ celebrate.
+
+
+
+
+Research assessment | October 29, 2026                                                                                        16
+AI OPTIONS TRADING                                                                        EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ Report every chronological window, including failure periods. Aggregating only the best model from each
+ period after observing the period would create a strategy that could not have existed in real time.
+
+
+
+ 14. Execution simulation: where a paper edge often
+ disappears
+ Build an event-driven simulator around what could have been submitted and filled. For a deliberately
+ conservative long-option baseline, buy at a valid post-decision ask and sell at a valid post-exit-decision bid,
+ with additional latency, capacity limits, and actual fees. That is a baseline assumption, not a guarantee of
+ those fills. Market movement between decision, submission, and exchange acknowledgment can make
+ execution worse.
+
+ Limit orders can improve price but can also remain unfilled. A midpoint appearing on a quote screen does
+ not imply your order would execute there. Official options education describes the price-versus-fill tradeoff
+ and the importance of available bid/ask liquidity. [22]
+
+ Illustrative arithmetic: an option is quoted $1.95/$2.05, midpoint $2.00. Later it is $2.05/$2.15, midpoint
+ $2.10. A midpoint-only backtest records a 5% gain. Buying at the initial ask and selling at the later bid
+ produces zero gross gain; fees turn it into a loss. With an unchanged $1.95/$2.05 quote, immediately
+ crossing both sides loses $10 per standard contract before fees, or about 4.88% of the $205 purchase cost.
+
+ Required handling includes quote staleness and crossed markets; order size relative to accessible liquidity;
+ partial fills; cancel/replace races; rejected orders; outages; transaction fees; early closes; and the ordering
+ of events within bars. If a bar hits both a stop and a profit target, its high and low alone cannot tell which
+ happened first. Use finer data or a conservative unresolved-case rule.
+
+ For spreads, simulate a supported complex order or conservative leg handling. Do not independently
+ assume every leg fills at an advantageous midpoint. Reject a strategy if most of its profit depends on
+ unverifiable favorable fill assumptions.
+
+ Alpaca explicitly says its paper environment omits factors including market impact, latency slippage, queue
+ position, and regulatory fees. Therefore, an Alpaca-labeled PnL column cannot by itself establish live
+ achievable performance. Paper mode is valuable for workflow and reconciliation checks; a later controlled
+ live pilot is needed to measure actual fills if the strategy first passes research review. [16]
+
+
+
+ 15. Portfolio sizing and the target's risk implications
+ Keep forecast generation separate from position sizing. Rank candidates by expected net dollar
+ contribution, downside, and incremental portfolio exposure, rather than the largest predicted percentage
+ on the cheapest option. Size only after accounting for already-open and pending orders.
+
+ For long options, full premium plus costs is the relevant contractual loss before any exercise-related stock
+ exposure. For debit spreads, use the properly constructed defined-risk loss and account for assignment,
+ exercise, and legging complications. An intended stop does not turn an option into a guaranteed
+ smaller-loss instrument. OCC explains the possibility of losing the entire premium and the obligations
+ associated with exercise and assignment. [19, 20]
+
+
+
+
+Research assessment | October 29, 2026                                                                             17
+AI OPTIONS TRADING                                                                                 EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ The following is an illustrative conservative pilot configuration to make the engineering test concrete. It is
+ not calibrated to your finances and is not a guarantee of bounded realized daily loss.
+
+
+   Control                               Example research setting                        Interpretation
+
+
+   Maximum contractual loss for a new    0.25%-0.50% of equity                           Based on full premium/defined loss,
+   position                                                                              not the intended stop
+
+
+   Total simultaneous option premium     At most 5% of equity                            Also include pending orders and
+   or defined-risk loss                                                                  correlated scenarios
+
+
+   Same underlying or strongly           At most 2% of equity                            Treat overlapping ETF and technology
+   correlated bucket                                                                     exposure together
+
+
+   Daily loss trigger                    Around 1%-1.5% of beginning equity              Stop new entries and initiate risk
+                                                                                         reduction; execution can overshoot
+
+
+   Pilot drawdown review trigger         Around 5% from the high-water mark              Pause and investigate rather than
+                                                                                         increase leverage
+
+
+   Overnight exposure                    Disabled initially                              Add only after separate gap-risk
+                                                                                         testing
+
+
+ These controls may leave the system unable to approach a 1% average daily goal. With only 5% of equity
+ deployed in one same-day cohort, a 1% account gain requires a 20% gain on that premium before further
+ costs. More turnover does not automatically help, because it creates repeated spreads, fees, correlation,
+ and loss opportunities.
+
+ Stress net delta, gamma, vega, theta, volatility crush, market gaps, and correlated positions. Use realistic
+ joint scenarios rather than assuming unrelated option trades diversify one another. Do not increase position
+ sizes to recover losses or force a daily profit target. The actual risk budget must be chosen from your
+ capital, liquidity needs, and acceptable drawdown before any deployment.
+
+
+
+ 16. Broker integration and operational controls
+ The screenshot's dual-broker design is operationally plausible: Alpaca publishes options trading APIs, while
+ Schwab's individual Trader API supports account access, market data, and trading. Public availability does
+ not imply that a particular account is approved for every strategy or product. [15, 17]
+
+ Start with one broker so fills, fees, and account states can be reconciled unambiguously. Add a second only
+ when there is a measured operational or execution benefit. Validate product support, option approval level,
+ complex orders, order types, rate limits, authentication refresh, expirations, and exercise procedures using
+ that broker's current documentation and account settings.
+
+
+   Failure mode                                      Required behavior
+
+
+   Stale or missing market data                      Reject new entries; evaluate existing exposure through the risk service
+
+
+   Unknown order outcome after timeout               Query and reconcile by stable client order ID before resubmitting
+
+
+
+
+Research assessment | October 29, 2026                                                                                         18
+AI OPTIONS TRADING                                                                                  EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Failure mode                                     Required behavior
+
+
+   Duplicate scheduler invocation                   Idempotent position and order transitions
+
+
+   Partial close                                    Retain residual exposure and continue monitored handling
+
+
+   Authentication failure                           Alert, block new orders, and activate documented manual intervention
+
+
+   Position mismatch                                Block new risk until ledger and broker state agree
+
+
+   Approaching expiry or overdue exit               Escalate independently of the entry model
+
+
+   Model or feature version mismatch                Reject the signal and record why
+
+
+ Alpaca's documentation describes exercise and assignment events and says assignments are not delivered
+ through its websocket events, so polling and next-day reconciliation cannot be omitted. Its paper non-trade
+ activity timing also differs from immediate balance changes. [15]
+
+ As of October 29, 2026, blanket statements that every U.S. day trader must maintain $25,000 are
+ incomplete. FINRA's replacement intraday-margin standards became effective June 4, 2026, with a
+ permitted firm transition through October 20, 2027. A broker may still use the earlier regime during
+ transition; confirm the regime and house rules for the actual account. Cash-account settlement constraints
+ also require explicit handling. [21]
+
+
+
+ 17. How to measure success honestly
+ The main report card must begin with account-level calendar-day returns after executable trading costs.
+ Keep cohort returns as a useful explanation of which entries contributed profit, with a different label and
+ denominator.
+
+
+   Measurement                                      Why it matters
+
+
+   Beginning and ending account equity with         Establishes the actual capital base
+   timed cash flows
+
+
+   Gross and net PnL, with spread/slippage/fees     Shows whether the modeled signal survives implementation
+   separated
+
+
+   Arithmetic average daily return and geometric    Separates expected daily PnL from compounding
+   growth
+
+
+   Fraction of days above +1%; losing days; worst   Directly evaluates the stated target's distribution
+   day
+
+
+   Maximum drawdown, recovery time, expected        Measures the cost of surviving the strategy
+   shortfall
+
+
+   Exposure-adjusted benchmarks                     Distinguishes model contribution from leveraged market or volatility
+                                                    exposure
+
+
+
+
+Research assessment | October 29, 2026                                                                                      19
+AI OPTIONS TRADING                                                                                      EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Measurement                                           Why it matters
+
+
+   Rolling and regime results                            Detects dependence on one market period
+
+
+   Top-day and top-trade profit concentration            Reveals rare-event dependence
+
+
+   Capacity, fill rate, execution shortfall, latency     Tests whether the result can be traded at intended size
+
+
+   All-in operating cost at actual account size          Prevents a small gross edge from hiding an economic loss
+
+
+ Predeclare what would count as support for each claim. A positive estimate of average return is not
+ evidence that the true average exceeds 1%. A confidence interval entirely above zero supports a different
+ statement from one entirely above +1%. Both are vulnerable to nonstationarity and research selection,
+ even with careful statistical treatment.
+
+ For example, an estimated daily mean of +1.2% whose interval includes -0.3% and +2.7% does not
+ establish either positive expected performance or a 1% threshold. This interval is hypothetical, provided
+ solely to illustrate the interpretation.
+
+ Sixty trading days can help test operations but cannot establish durability across market regimes. A large
+ trade count cannot substitute for independent time and differing conditions. Match model promotion to both
+ economic magnitude and uncertainty, and publish failed windows rather than reporting only the best
+ aggregate number.
+
+
+
+ 18. A staged implementation plan
+ The time ranges below are planning estimates for a focused builder with appropriate data access; they are
+ not delivery commitments or evidence of future profitability. Historical data preparation can dominate the
+ schedule.
+
+
+   Stage                         Work                                 Reviewable output                 Advance only when
+
+
+   1: definition and audit       Specify return denominator,          Written experiment contract;      Accounting and success
+                                 universe, horizon, risk, and         screenshot ledger questions       criteria are unambiguous
+                                 source evidence
+
+
+   2: data sample                Compare small matched vendor         Data quality and timing report    Historical contracts and
+                                 samples; build contract master                                         executable quotes can be
+                                                                                                        reconstructed
+
+
+   3: baseline research          Build labels and simulator; train    Full chronological results with   Net edge survives realistic
+                                 fixed rules, linear, and trees       cost sensitivity                  assumptions
+
+
+   4: challengers                Add small neural and sequence        Trial registry, ablations,        Incremental value survives
+                                 models; constrained ensemble         calibrated predictions            new windows and search
+                                                                                                        adjustment
+
+
+   5: operational shadow         Run signals and paper orders;        Reconciled ledger and             No unexplained
+   mode                          deliberately test failures           exception log                     position/cash mismatches
+                                                                                                        or duplicate orders
+
+
+
+
+Research assessment | October 29, 2026                                                                                             20
+AI OPTIONS TRADING                                                                                     EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+   Stage                        Work                                Reviewable output                  Advance only when
+
+
+   6: controlled live pilot     Only after separate authorization   Real fill and slippage evidence    Real economics and
+                                and review, use small defined                                          operational behavior
+                                risk                                                                   support continuation
+
+
+   7: gradual scale             Increase size in measured steps     Capacity and risk review at        Edge persists and risk
+                                                                    each step                          remains within the chosen
+                                                                                                       budget
+
+
+ A focused research prototype could take roughly 6-12 weeks if data and engineering resources are
+ available. A short prototype is not a validated investment system. Shadow evaluation and any live evidence
+ require additional calendar time; multi-regime evidence usually requires substantially more history and
+ ongoing monitoring.
+
+ The first deliverable should be a reproducible research package: data dictionary, code revision, frozen
+ splits, label specification, complete trial log, executable simulator assumptions, account return calculation,
+ and an exception report. A visually persuasive dashboard is useful after these foundations exist.
+
+ Do not solve a failure to reach 1% by changing the denominator, excluding losing positions, increasing
+ leverage, or reusing the final holdout. A strategy can pass a positive-edge test and fail the high-return
+ target. That is a meaningful research result and should remain visible.
+
+
+
+ 19. Costs, priorities, and the information still needed
+ Separate research budget from trading capital. A credible total depends on the universe, data depth,
+ number of dates, quote resolution, licensing status, storage, and whether live execution is attempted.
+ Current vendor documentation confirms that coverage and entitlement differ materially; a single
+ subscription price is not a complete project quote. [9-14]
+
+
+   Budget category                                     What to specify before spending
+
+
+   Historical data                                     Symbols, expired chains, date range, quote/trade resolution, analytics,
+                                                       corrections
+
+
+   Live data                                           Actual OPRA entitlement, underlying feed, index licensing where relevant
+
+
+   Compute and storage                                 Filtered dataset size, replay frequency, archival and backup needs
+
+
+   Brokerage                                           Per-contract fees, exchange/regulatory charges, order support, financing
+
+
+   Engineering                                         Data cleaning, research reproducibility, order lifecycle, monitoring,
+                                                       reconciliation
+
+
+   Trading capital                                     Risk budget, discrete contract size, margin/cash rules, adverse scenarios
+
+
+ Start with a narrowly scoped sample and CPU-based baselines. Do not buy a large GPU because the
+ experiment screenshot shows a long training run. Better execution data, a correct ledger, and strict
+ validation are higher priorities than parameter count for this project.
+
+
+
+
+Research assessment | October 29, 2026                                                                                             21
+AI OPTIONS TRADING                                                                         EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ The current unknowns that would materially change a deployment design are: starting account size;
+ jurisdiction and broker eligibility; maximum acceptable drawdown and daily loss; intraday-only versus
+ overnight holding; acceptable option structures; historical data budget; engineering resources; and access
+ to the original presentation, code, or ledger. This research assumes U.S. products because those are visible
+ in the screenshots. It does not assume your location or account approval.
+
+ The most valuable next evidence is the original full video or explanation plus a complete broker-reconciled
+ equity history. That can clarify whether the method's claimed return is on premium, margin, deployed
+ capital, or all account equity, and whether its entry cohorts span multiple days. The screenshots alone
+ cannot recover those missing definitions.
+
+
+
+ 20. Exact evidence required to assess the 5% claim
+ Request a contiguous record rather than selected screenshots. At minimum, collect:
+
+  1. Daily and, if available, intraday net liquidation equity from inception, including all losing and inactive
+     days.
+
+  2. Timed deposits, withdrawals, transfers, and any changes to capital allocation.
+
+  3. Broker export of every order, acknowledgment, fill, cancellation, rejection, and fee, with paper/live status.
+
+  4. Every position's contract ID, direction, strike, expiry, multiplier, deliverable, quantity, and timestamps.
+
+  5. Open-position marks and the exact source and timestamp of those marks.
+
+  6. Exercise, assignment, expiry, corporate-action, financing, and cash adjustments.
+
+  7. The exact SQL or code for every PnL percentage, total, and cohort inclusion rule, plus timestamped
+     trade-level explanations for the changes in Schwab figures for the same opening dates.
+
+  8. A data manifest, feature definitions, labels, training windows, model revisions, and trial history.
+
+  9. Definitions of gain.v/lift, its paired tooltip values, all thresholds, gain.t, gain.v, tradability.t, the Step
+     counter, and the meaning of 5x200f.
+
+  10. Checkpoint artifact, hash, architecture/configuration, training cutoff, deployment activation time, and
+     the mapping between m14.L.fund3 and m14.fund3.
+
+  11. Complete performance by model and account, including discontinued versions and unsuccessful periods.
+
+ Recompute account returns independently, reconcile them to statements, then compare the result with the
+ dashboard. Check whether both broker columns contain distinct trades or duplicated exposure. Identify
+ whether profits depend on stale or midpoint marks, losing open positions being omitted, or earlier cohorts
+ being retroactively credited to their entry dates. These are audit questions, not accusations.
+
+ Strong evidence would consist of a reproducible specification and a long, complete, independently
+ reconciled record after costs. It could demonstrate historical performance without guaranteeing future
+ results. Weak evidence would consist of a short favorable sample, undefined lift metrics, or premium-based
+ gains presented as account returns.
+
+
+
+ 21. Reference decision policy and audit record
+ This pseudocode specifies a proposed research policy; it is not a runnable or profitable trading bot.
+
+
+
+Research assessment | October 29, 2026                                                                                22
+AI OPTIONS TRADING                                                                       EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+  At each scheduled decision time:
+      reconcile broker cash, positions, fills, and pending orders
+      if account state or market data is unreliable: reject new risk
+      build eligible contracts using information available now
+      construct versioned features and verify availability times
+      predict net payoff distribution for each allowed contract/structure
+      reject stale, illiquid, uncertain, or negative-edge candidates
+      evaluate incremental portfolio risk including pending orders
+      select only positions permitted by the fixed risk budget
+      submit through an idempotent order service
+      record predictions, rejections, orders, and fills
+
+  Continuously and independently:
+      monitor exits, expiration, fills, residual positions, and risk
+      reconcile actual fills before retrying unknown orders
+      halt new entries when health or loss triggers activate
+
+  At the accounting boundary:
+      reconcile cash events and mark every remaining exposure
+      compute cash-flow-adjusted account return
+      separately update opening-date cohort returns
+      store model, data, execution, and accounting versions
+
+
+
+ Each candidate decision should retain: decision ID; model/version; raw-data and feature versions; feature
+ availability time; exact contract identity; forecast mean and quantiles; predicted costs; proposed quantity;
+ portfolio exposures before and after; acceptance/rejection reason; client and broker order IDs; submissions,
+ acknowledgments, fills and cancels; actual cost; exit reason; and final ledger links.
+
+ This record separates forecast, sizing, execution, and operational errors, and preserves what was actually
+ known and decided. It makes subsequent learning auditable. The investment decision remains empirical:
+ does net account growth justify the strategy's losses and capacity limits?
+
+
+
+ 22. Source register and verification limits
+ Primary research and official documentation were prioritized. Web sources were checked on October 29,
+ 2026. Product capabilities, data entitlements, rules, and fees can change. The report uses findings as
+ research context, not as independently replicated performance. Original calculations were performed
+ directly from transcribed screenshot values and elementary return arithmetic.
+
+
+
+
+Research assessment | October 29, 2026                                                                           23
+AI OPTIONS TRADING                                                                             EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ Supplied attachments
+
+   Reference                             Original attachment                        Used for
+
+
+   A1                                    Screenshot 2026-08-23 at 5.41.16 PM.png    Wide PnL view, footnote, percentages,
+                                                                                    reconciliation
+
+
+   A2                                    Screenshot 2026-10-29 at 10.42.39 AM.png   Longer August cohort table
+
+
+   A3                                    Screenshot 2026-10-29 at 10.42.55 AM.png   Health checks
+
+
+   A4                                    Screenshot 2026-10-29 at 10.43.32 AM.png   Positions map
+
+
+   A5                                    Screenshot 2026-10-29 at 10.43.42 AM.png   Apparent repeat of A2
+
+
+   A6                                    Screenshot 2026-10-29 at 10.48.03 AM.png   Experiment run and custom metrics
+
+
+   A7                                    Screenshot 2026-10-29 at 10.50.37 AM.png   Earlier narrow PnL view
+
+
+   A8                                    Screenshot 2026-10-29 at 10.57.07 AM.png   fund3 Crashed label and first tooltip
+
+
+   A9                                    Screenshot 2026-10-29 at 10.57.15 AM.png   fund3 tooltip near 2.119G Step
+
+
+   A10                                   Screenshot 2026-10-29 at 10.57.42 AM.png   Larger fund3 lift curve
+
+
+   A11                                   Screenshot 2026-10-29 at 10.58.13 AM.png   Metric groups and chart continuation
+
+
+   A12                                   Screenshot 2026-10-29 at 10.59.00 AM.png   Checkpoint, live label, June/July view
+
+
+   A13                                   Screenshot 2026-10-29 at 10.59.22 AM.png   Repeated opening-date and
+                                                                                    entry-cost formula
+
+
+   A14                                   Screenshot 2026-10-29 at 11.04.32 AM.png   Expanded August broker/side PnL
+
+
+   A15                                   Screenshot 2026-10-29 at 11.05.56 AM.png   h1b run URL and lift thresholds
+
+
+   A16                                   Screenshot 2026-10-29 at 11.06.59 AM.png   h1b continuation and call/put panels
+
+
+   A17                                   Screenshot 2026-10-29 at 11.07.46 AM.png   Repeated expanded August PnL
+
+
+   A18                                   Screenshot 2026-10-29 at 10.50.51 AM.png   Earlier dated broker PnL view
+
+
+   A19                                   Screenshot 2026-10-29 at 10.51.03 AM.png   Earlier broker totals, update time, and
+                                                                                    formula
+
+
+   A20                                   Screenshot 2026-10-29 at 10.51.25 AM.png   Earlier call/put breakdown with dates
+
+
+   A21                                   Screenshot 2026-10-29 at 10.51.33 AM.png   Earlier realized/unrealized and
+                                                                                    percentage view
+
+
+
+
+Research assessment | October 29, 2026                                                                                      24
+AI OPTIONS TRADING                                                                                   EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ Research and documentation
+ 1. Koosh Azimian, official homepage and Projects. A public lead, not verification of screenshot ownership or returns.
+     https://kooshiar.com/ and https://kooshiar.com/projects
+
+ 2. Bali et al., Option Return Predictability with Machine Learning and Big Data, Review of Financial Studies 36(9), 2023.
+     Published article abstract reviewed. https://doi.org/10.1093/rfs/hhad017
+
+ 3. Bali et al., accessible August 20, 2021 working-paper version. Used for horizon, target, model, and validation details;
+     numerical results should not be conflated with the final version.
+     https://www.cfr-cologne.de/download/workingpaper/cfr-21-08.pdf
+
+ 4. Tan, Roberts, Zohren, Deep Learning for Options Trading: An End-To-End Approach, 2024 preprint, v1.
+      https://arxiv.org/html/2407.21791v1
+
+ 5. Buehler et al., Deep Hedging, published 2019; preprint. https://arxiv.org/abs/1802.03042 and
+     https://doi.org/10.1080/14697688.2019.1571683
+
+ 6. Lim et al., Temporal Fusion Transformers for Interpretable Multi-horizon Time Series Forecasting. Architecture context,
+      not evidence of options returns. https://arxiv.org/abs/1912.09363
+
+ 7. Bailey et al., The Probability of Backtest Overfitting, institutional repository. https://escholarship.org/uc/item/4w1110bb
+
+ 8. Bailey and Lopez de Prado, The Deflated Sharpe Ratio, author-hosted paper.
+     https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf
+
+ 9. Cboe DataShop, Option Quotes. Coverage, fields, and June 2026 quote-size convention.
+     https://datashop.cboe.com/option-quote-intervals
+
+ 10. Massive, Options Flat Files Overview. https://massive.com/docs/flat-files/options/overview
+
+ 11. Databento, OPRA dataset documentation. Historical schema/timestamp differences.
+     https://databento.com/docs/datasets/opra-pillar
+
+ 12. Databento, OPRA dataset catalog. Coverage differs by schema. https://databento.com/datasets/OPRA.PILLAR
+
+ 13. Alpaca, Historical Option Data. Coverage and indicative-versus-OPRA distinction.
+     https://docs.alpaca.markets/us/docs/historical-option-data
+
+ 14. OptionMetrics, IvyDB US. End-of-day coverage and analytics. https://optionmetrics.com/united-states/
+
+ 15. Alpaca, Options Trading. Approval levels, orders, exercise, assignment, and paper activity timing.
+     https://docs.alpaca.markets/us/docs/options-trading
+
+ 16. Alpaca, Paper Trading. Simulation limitations. https://docs.alpaca.markets/us/docs/paper-trading
+
+ 17. Schwab, Trader API - Individual. https://developer.schwab.com/products/trader-api--individual
+
+ 18. Cboe, Comparison of S&P 500 Option Products.
+     https://www.cboe.com/tradable_products/sp_500/spx_weekly_options/specifications
+
+ 19. OCC, Equity Options Product Specifications.
+     https://www.theocc.com/clearance-and-settlement/clearing/equity-options-product-specifications
+
+ 20. OCC, Characteristics and Risks of Standardized Options. Disclosure landing page and current linked June 2024
+     document reviewed.
+     https://www.theocc.com/company-information/documents-and-archives/options-disclosure-document
+
+ 21. FINRA, Regulatory Notice 26-10 and investor explanation of intraday margin.
+     https://www.finra.org/rules-guidance/notices/26-10 and
+     https://syndication.finra.org/content/understanding-new-intraday-margin-requirements
+
+
+
+
+Research assessment | October 29, 2026                                                                                            25
+AI OPTIONS TRADING                                                                                 EVIDENCE AND SYSTEM DESIGN
+
+
+
+
+ 22. Options Industry Council, Trade Entry & Execution.
+     https://www.optionseducation.org/referencelibrary/faq/trade-entry-execution
+
+ 23. FINRA, Zeroing In on an Options Trading Strategy: 0DTE. Used for expiry and liquidation risks; its older day-trading-rule
+     discussion must be read with source 21. https://syndication.finra.org/content/zeroing-options-trading-strategy-0dte
+
+ 24. Dorion, Orlowski, Song, The Factor Structure of 0DTE Option Returns, 2026 working paper, SSRN abstract only.
+     https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7149778
+
+ 25. PyTorch, Serialization Semantics. The .pt/.pth convention and types of serialized objects.
+     https://docs.pytorch.org/docs/stable/notes/serialization
+
+ 26. Weights & Biases, official SDK source: public runs API and run-state descriptions.
+     https://github.com/wandb/wandb/blob/main/wandb/apis/public/runs.py
+
+ 27. Weights & Biases, official workspace API source: axis, smoothing, sampling, and tooltip configuration. Establishes
+     platform capabilities, not this screenshot's chosen settings.
+     https://github.com/wandb/wandb-workspaces/blob/main/wandb_workspaces/workspaces/interface.py
+
+
+ Boundaries of this research
+ The displayed txrdash site, apparent Weights & Biases project, and newly visible exact h1b run URL could
+ not be retrieved through the research service, and exact-name searches did not expose their underlying
+ code. All 21 supplied images were visually reviewed; the newly visible run address is
+ https://wandb.ai/kooshiar-na/m10/runs/r7m6m7w9 and is recorded as an unavailable lead, not an inspected
+ source. The application labels one June/July view live, but broker verification remains unavailable. This
+ report does not infer private information from access failures. The owner's precise architecture and live
+ results remain unverified. Historical data vendors were assessed from current official documentation, not
+ from a purchased sample or completeness audit. Source 24 was accessible through its indexed abstract;
+ the full paper was not retrieved. No backtest, historical fill reconstruction, proprietary model replication,
+ brokerage reconciliation, or live order was performed.
+
+ The recommended path is to reproduce the visible separation of research, selection, risk, execution, exits,
+ and accounting; correct the return measurement; and test the proposed edge before committing trading
+ capital. The decisive evidence is net account performance under reproducible assumptions and acceptable
+ losses, not the apparent sophistication of the model or dashboard.
+
+
+
+
+Research assessment | October 29, 2026                                                                                           26
+

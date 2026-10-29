@@ -1,77 +1,166 @@
-# Project Charter — Project 9: AI Option Trading (v1.1, amended 2026-10-28)
+# Project Charter — Project 9: AI Option Trading (v1.2, 2026-10-29)
 
-> Project 9 had no formal charter in Claude. v1.0 was written on 2026-10-28 **only from the
-> decisions already recorded** in the research review (`docs/reports/P9_ML_Research_Review_and_Handoff`,
-> 27 Sep 2026); the unchanged v1.0 is in `version-history/PROJECT_CHARTER_v1.0_pre-amendment.md`.
-> Section 10 is the 2026-10-28 amendment.
+> **v1.2 consolidates v1.1 with the 2026-10-29 review** of the ChatGPT chat "AI Options Trading
+> Research" (21 screenshots of a reference ML options system and a 26-page research report; see
+> `REFERENCE_SYSTEM_ANALYSIS.md`). Earlier versions: `version-history/PROJECT_CHARTER_v1.0_pre-amendment.md`
+> (27 Sep research decisions) and `version-history/PROJECT_CHARTER_v1.1_pre-amendment.md`
+> (28 Oct competitive-analysis amendment). Section 13 lists what changed.
 
 ## 1. Purpose
-Find machine-learning approaches that can trade listed options profitably after realistic costs,
-and design a system to test them.
+Build and rigorously test an AI options-trading system that grows **total account equity after all
+trading costs**, using a reference system seen in the wild (`m14.fund3`) as the structural model and
+published research as the benchmark.
 
-## 2. Scope
-- In: ML forecasting of implied volatility (IV), realized volatility (RV), IV–RV spread, option
-  returns, probability of a profitable trade; regime detection; strategy selection; sizing and
-  hedging; cost-aware execution; walk-forward validation.
-- Out (for now): live trading with capital; autonomous trading without human review.
+## 2. Goals
 
-## 3. Primary horizon
-Daily + medium term (about 1 week to 3 months). Intraday is a separate, later module.
+| # | Goal | How it is measured |
+|---|---|---|
+| G1 | **Primary — net account growth.** Owner target: **> 1 % per trading day**, defined as geometric daily growth of total account equity after costs, losing days allowed | Cash-flow-adjusted daily account return; compounded growth; share of days > +1 % |
+| G2 | Survive while pursuing G1 | Pass/fail gates: max drawdown, daily loss, CVaR/stress loss, Greek and margin limits (section 8) |
+| G3 | Prove the edge is real, not luck or overfitting | Out-of-sample chronological windows, cost stress, deflated Sharpe / backtest-overfitting checks |
+| G4 | Beat simple alternatives | Must beat no-trade, a fixed rule, Elastic Net, Goyal–Saretto, Cboe PUT/BXM under the same costs |
+| G5 | Build a reproducible, auditable system | Every trade linked to checkpoint, data version and ledger entry |
 
-## 4. Objective hierarchy (as agreed in the research chat)
-1. Survival — CVaR, stress loss, probability of ruin
-2. Risk control — max drawdown, Greeks, concentration, liquidity
-3. Risk-adjusted profit — Sharpe, Sortino
-4. Net profit — CAGR / total P&L after all costs
-5. Efficiency — return per unit of turnover, margin, capital
-6. Prediction quality — RMSE, MAE, AUC (supporting only)
+**The 1 % target is a hypothesis to test, not a promise.** 1 %/day compounds to ≈ 12.3× in 252
+trading days; nothing yet shows it is achievable. A strategy that passes G2–G4 but misses 1 %/day is
+still a valid result and stays visible. Do not "reach" 1 % by changing the denominator, dropping losing
+positions, adding leverage or reusing the final test period.
 
-## 5. Core model families
-XGBoost/LightGBM, LSTM, Transformer/TFT, GNN (or CNN), PPO/deep hedging; Elastic Net as control.
-The other 14 reviewed models are secondary benchmarks. Prediction and decision layers stay separate.
+**Win rate is a diagnostic, not a goal.** The owner accepts a low win rate if winners outweigh losers.
+Report it with average win/loss, losing streaks and profit concentration.
 
-## 6. Frameworks
-1. Adaptive ML Volatility + Relative-Value + Risk Control (main)
-2. ML Multi-Strategy Regime-Switching
-3. ML + Deep Hedging / RL
-4. Institutional VRP / Risk-Target (benchmark)
-5. Institutional Option-Overlay (benchmark)
+## 3. Scope
 
-## 7. Validation protocol
-Statistical → economic → execution → crisis tests (2008, 2020, 2022). Chronological walk-forward
-(e.g. train 2010–2018, validate 2019–2020, test 2021, roll yearly). No random splits.
-Trade only if expected edge > spread + slippage + commission + impact (the cost gate).
+**In (first build):**
+- SPY and QQQ standard options (one shared risk bucket); long calls and long puts; debit spreads as a
+  second test.
+- Supervised models predicting executable net option PnL, tradability and downside.
+- Event-driven backtest on historical bid/ask quotes; paper trading; then a small live pilot only after
+  separate authorisation.
+- Track B (benchmarks): published daily/monthly designs — Bali et al. 2023, Tan et al. 2024,
+  Goyal–Saretto, Cboe PUT/BXM.
 
-## 8. Plan
-See `ROADMAP.md` (8 steps from the research review).
+**Out (for now):** uncovered (naked) short options; 0DTE; overnight holding; single stocks (until
+corporate actions and earnings are handled); language models making buy/sell decisions; autonomous
+live trading without human review.
 
-## 9. Open question
-Keep daily + medium term as the primary horizon, or prioritise intraday? (Raised as a doc comment on
-28 Sep 2026; no reply recorded.)
+## 4. Horizon and measurement
+- **Measurement:** calendar-day account return is the headline number. Entry-date **cohort** returns are
+  kept as an explanatory view with their own label and denominator (the reference system's dashboard
+  mixes these up).
+- **Track A (primary, new):** intraday-to-next-day holding on options with weeks to expiry.
+- **Track B (benchmark):** daily to monthly designs from the 28 Oct competitive analysis.
+- Daily measurement does **not** require daily-expiring options.
 
-## 10. Amendment — 2026-10-28 (competitive analysis + owner goal)
+## 5. First experiment contract (pre-register before looking at the test period)
 
-**10.1 Selection objective (replaces the ranking order in section 4 for choosing models).**
-The owner's goal is: (1) maximum net profit, then (2) a higher win rate, with (3) a reasonable
-number of trades. Models and strategies are therefore **ranked by net P&L after all costs, then win
-rate, then trade count**. A candidate needs a minimum number of out-of-sample trades to be ranked.
-The survival and risk items in section 4 (CVaR, stress loss, max drawdown, Greek and margin limits)
-stay as **pass/fail gates**: a candidate that breaches them is excluded however profitable it is.
-Prediction metrics remain supporting diagnostics.
+| Setting | Value (starting assumption, not known to be profitable) |
+|---|---|
+| Underlyings | SPY, QQQ |
+| Contracts | Standard, unadjusted long calls and puts |
+| Expiry | 7–21 calendar days to expiry (DTE); later grid 5–10 / 11–21 / 22–45 |
+| Delta | absolute delta 0.35–0.60 |
+| Decisions | every 15 minutes, after a completed feature interval |
+| Holding | fixed 60 minutes; no entry that can't close before the session cutoff |
+| Positions | max 1 open per underlying; integer contracts |
+| Labels | unit-contract net dollar PnL **and** % of premium (exit bid − entry ask − fees − slippage) |
+| Models compared | fixed momentum rule, Elastic Net, LightGBM, 2-layer neural net, one LSTM or causal-CNN |
+| Tuning | budget fixed in advance; every configuration and seed logged |
+| Promotion | net calendar-day account performance, drawdown, uncertainty, cost-stress stability |
 
-**10.2 Benchmarks made concrete.** Every candidate is compared with: the Goyal–Saretto IV–RV
-straddle rule; the Cboe PUT and BXM indices (institutional VRP, framework #4); SHAR for IV
-forecasts; and Elastic Net.
+## 6. Models and build order
 
-**10.3 Build order.** Reproduce a published, simple design first (Bali et al. cross-sectional
-delta-hedged option returns; Tan et al. straddle strategy with turnover regularization). The full
-layered architecture (regime engine, strategy selector, RL) is added only where it raises net
-profit over those reproductions.
+| Order | Model family | Role |
+|---|---|---|
+| 1 | Fixed rules + regularized linear (Elastic Net / calibrated classifier) | Mandatory baselines |
+| 2 | Gradient-boosted trees (LightGBM / XGBoost) | Primary first model |
+| 3 | Small feed-forward neural net (PyTorch, checkpointed) | First neural candidate, run alongside trees |
+| 4 | LSTM or causal CNN/TCN | Sequence challenger |
+| 5 | Quantile / distribution models | Downside, uncertainty, abstain-or-trade |
+| 6 | TFT or small transformer; GNN/CNN on the IV surface | Later, only if data justifies it |
+| 7 | RL / deep hedging | Exits, execution, hedging — only after a realistic simulator exists |
+| — | Language models | Optional, logged auxiliary inputs only |
 
-**10.4 Costs.** Every backtest reports results at several cost levels (e.g. 0, 20, 50 bps or
-25–100% of quoted spread) and trains with a turnover penalty where the model allows it.
+**Neural ablations (from the reference system):** gain-only vs gain + **tradability** head; separate
+**call/put** outputs; added downside/uncertainty output. Ensembles only when members add distinct
+out-of-sample information; weights learned on training/validation data, never on the test period.
 
-**10.5 Horizon.** Daily + medium term stays primary (the doc comment of 28 Sep 2026 had no reply;
-the competitive evidence is monthly and daily). Intraday remains a later module.
+Prediction and decision layers stay separate (unchanged from v1.0).
 
-**10.6 Roadmap.** Phase 9 (items 9.1–9.10) added; see `ROADMAP.md`.
+## 7. System architecture
+Raw data store → contract master → feature builder → label builder → **model registry (checkpoints,
+hashes, trial log)** → ranking + tradability filter → **portfolio/risk controller** (can veto any
+model) → order service (idempotent, one broker first) → **independent exit service** → **ledger**
+(cash, fills, exercises, assignments, fees) → monitoring and dashboards (account view + cohort view).
+CPU is enough to start; no large GPU purchase.
+
+The 10-layer research architecture from the 27 Sep review (`assets/recommended_architecture.png`) stays
+as the long-term target; the regime engine, strategy selector and RL are added only where they raise
+net account return over the first build.
+
+## 8. Risk controls (pilot starting points — owner to confirm)
+
+| Control | Starting value |
+|---|---|
+| Max contractual loss per new position | 0.25–0.50 % of equity (full premium, not the stop) |
+| Total open premium / defined-risk loss | ≤ 5 % of equity, including pending orders |
+| Same or correlated underlying (SPY+QQQ) | ≤ 2 % of equity |
+| Daily loss trigger | ≈ 1–1.5 % of opening equity → stop new entries, reduce risk |
+| Drawdown review | ≈ 5 % from high-water mark → pause and investigate |
+| Overnight exposure | Off initially |
+
+These limits may make 1 %/day unreachable (5 % of equity deployed needs a 20 % premium gain for 1 %).
+That tension is deliberate and must be resolved by evidence, not by loosening limits.
+Never size up to recover losses or to force a daily target.
+
+## 9. Validation protocol
+- Chronological, nested walk-forward (e.g. train 2018–2021, validate 2022, test 2023, roll yearly);
+  preprocessing and tuning fitted only on data available at the time.
+- Purge overlapping labels; embargo gaps; keep same-day contracts together; include expired contracts.
+- Execution sim: buy at post-decision ask, sell at post-exit bid, latency, partial fills, fees, stale or
+  crossed quotes, early closes; spreads as complex orders, never assumed mid fills.
+- Cost stress at several levels (0 / 20 / 50 bps or 25–100 % of spread); turnover penalty where possible.
+- Block-bootstrap of daily account returns; Deflated Sharpe and probability-of-overfitting checks.
+- Ablations and label-shuffle sanity checks; report every window, including failures.
+- Crisis periods tested separately (2008 and 2020 where data allows, 2022).
+
+## 10. Data and brokers
+- **Data candidates** (sample-compare before buying): Cboe DataShop option quotes (from 2012), Massive
+  options flat files, Databento OPRA (from 2013; pre-28 Mar 2023 data differ), OptionMetrics IvyDB
+  (end-of-day from 1996, for Track B), Alpaca historical options (from Feb 2024, indicative feed).
+- **Brokers:** Alpaca and Schwab (both have option APIs, as in the reference system). Start with **one**
+  broker; Alpaca paper results don't include impact, latency or queue position, so a small live pilot is
+  needed to measure real fills.
+- Check FINRA's new intraday-margin rules (effective 4 Jun 2026, firm transition to 20 Oct 2027) with the
+  chosen broker.
+
+## 11. Success report card
+Beginning/ending equity with cash flows; gross vs net PnL with costs split out; arithmetic and geometric
+daily return; share of days > +1 %, losing days, worst day; max drawdown, recovery time, expected
+shortfall; exposure-adjusted benchmarks; rolling and regime results; **top-day and top-trade profit
+concentration** (the reference system made ≈ 85 % of displayed profit in one cohort); capacity, fill
+rate, slippage, latency; all-in operating cost; win rate as a diagnostic.
+
+## 12. Decisions needed from the owner
+1. Starting account size and the capital for this strategy.
+2. Maximum acceptable drawdown and daily loss.
+3. Broker to start with (Alpaca or Schwab) and option approval level.
+4. Historical-data budget and vendor.
+5. Precise success thresholds (e.g. what counts as passing G1).
+6. Confirm Track A (intraday-to-next-day, SPY/QQQ) as the primary build, replacing v1.1's
+   "daily + medium term primary".
+7. Intraday only, or overnight holding later.
+
+## 13. Changes from v1.1
+
+| Area | v1.1 (28 Oct) | v1.2 (29 Oct) |
+|---|---|---|
+| Headline goal | Max net profit, then win rate, then trade count | Net **account** growth, target > 1 %/day (hypothesis); win rate diagnostic only |
+| Primary horizon | Daily + medium term; intraday later | Track A intraday-to-next-day (SPY/QQQ) primary; Track B daily/monthly benchmarks — **owner to confirm** |
+| First build | Reproduce Bali et al. and Tan et al. | First experiment contract (section 5); reproductions move to Track B |
+| Model order | XGBoost, LSTM, Transformer, GNN, RL, Elastic Net | Rules/linear → trees → small NN → LSTM/TCN → quantile; TFT/GNN/RL later |
+| Neural targets | IV, RV, returns, P(profit) | Executable net option PnL + tradability + call/put + downside |
+| Architecture | 10-layer research design | Adds model registry, risk veto, independent exit service, ledger, dual dashboards |
+| Risk | Gates named | Pilot limits quantified (section 8) |
+| Out of scope | Live trading, autonomy | Adds naked short options, 0DTE, overnight, single stocks, LLM trade decisions |
+| Data/brokers | Vendor TBD | Five vendors and two brokers assessed; start with one broker |

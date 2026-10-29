@@ -7,7 +7,7 @@
   "docs_count": 0,
   "files_count": 0,
   "prompt_template": "",
-  "exported_at": "2026-10-28",
+  "exported_at": "2026-10-29",
   "claude_doc": {
     "title": "Project Option Trading — ML Research Review & Handoff",
     "artifact_url": "https://claude.ai/code/artifact/1e3fa115-074c-4248-aa4d-4c4832fbb401",
@@ -20,5 +20,15 @@
       "body": "Should I keep daily + medium term as the primary horizon, or would you rather prioritize intraday? Reply here or comment anywhere in the doc.",
       "replies": []
     }
-  ]
+  ],
+  "charter_version": "1.2",
+  "roadmap_version": "1.2",
+  "sources_added_2026_10_29": {
+    "chatgpt_share": "https://chatgpt.com/share/6ae3aaf7-3894-83e8-addd-a89700b3783d",
+    "title": "AI Options Trading Research",
+    "report": "docs/reports/AI_Options_Trading_Research_ChatGPT_2026-10-29.pdf",
+    "screenshots_reviewed": "A8-A21 (14 images in the share; A1-A7 were in an earlier, unshared part of the chat)"
+  },
+  "owner_goal": "Net account growth after costs; target > 1% per trading day (hypothesis); win rate diagnostic",
+  "local_repo": "~/Documents/GitHub/p09-ai-option-trading"
 }
