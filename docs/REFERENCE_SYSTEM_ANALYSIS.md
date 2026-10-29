@@ -8,7 +8,8 @@ over August 2026 entry cohorts, of which ≈ 85 % came from one cohort. Project 
 
 Sources: 21 screenshots of a third-party system shown in a video (A1–A21), reviewed by ChatGPT in
 `sources/chatgpt_conversation_ai_options_trading_research_2026-10-29.md` and its 26-page report
-`docs/reports/AI_Options_Trading_Research_ChatGPT_2026-10-29.pdf`. Claude re-viewed the 14 images in
+`docs/reports/AI_Options_Trading_Research_ChatGPT_2026-10-29.pdf`. The images are in
+`sources/reference-system-screenshots/` (A01–A21). Claude re-viewed the 14 images in
 the shared chat (A8–A21) and re-checked the arithmetic below on 2026-10-29.
 
 ## 1. What the system is made of

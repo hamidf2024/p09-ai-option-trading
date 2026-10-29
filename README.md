@@ -33,6 +33,7 @@ sources/
   chatgpt_handoff_options_research.docx / .md             ChatGPT's own handoff file (self-described as incomplete)
   chatgpt_conversation_ai_options_trading_research_2026-10-29.md   second ChatGPT chat (reference-system screenshots)
   chatgpt_ai_options_trading_research_report_2026-10-29.txt        text copy of the 26-page report
+  reference-system-screenshots/   A01–A21 screenshots of the reference system (index in its README.md)
 chats/
   claude_chat_transcript.md   the Claude conversation in this project
   raw/claude-export-p09.json.gz                           full export incl. every tool input/output

@@ -9,8 +9,7 @@ included in the shared link. The full 26-page report ChatGPT produced is saved a
 
 The screenshots are of a third-party options-trading system shown in a video (a dashboard called
 "txrdash" and Weights & Biases experiment runs). They are referred to below as A8–A21, the numbering
-ChatGPT's report uses. The image files themselves are on Hamid's Mac (named
-"Screenshot 2026-10-29 at …"); they are not stored in this repo.
+ChatGPT's report uses. The image files are saved in `sources/reference-system-screenshots/` (A01–A21).
 
 ---
 
